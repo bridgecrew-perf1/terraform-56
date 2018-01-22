@@ -1,0 +1,84 @@
+variable "cidr" {
+  description = "VPC address block"
+  default     = ""
+}
+
+variable "vpc_tenancy" {
+  description = "Instance type of tenancy, accepted values are default/dedicated"
+  default     = ""
+}
+
+variable "enable_dns_support" {
+  description = "Use if you are setting internal DNS's, default is false"
+  default     = ""
+}
+
+variable "enable_dns_hostnames" {
+  description = "What is the list of DNS servers"
+  default     = ""
+}
+
+variable dhcp_domain_name {
+  description = "The domain name for instances in this VPC"
+  default = ""
+}
+
+/*
+variable dhcp_dns_name_servers {
+  description = "Search list of the IP's or FQDN of your DNS servers (WIP)"
+  defautl = []
+}
+
+variable dhcp_dns_ntp_servers {
+  description = "Search list of the IP's or time servers (WIP)"
+  defautl = []
+}
+*/
+
+variable enable_dhcp {
+  description = "Set to true/false if you want to use this resource"
+  default = ""
+}
+
+variable azs {
+  description = "List of Azs for your environment"
+  default = []
+}
+
+variable public_subnets {
+  description = "The IP ranges for the Public subnets"
+  default = []
+}
+
+variable private_subnets {
+  description = "Ranges for the VPC Private subnets"
+  default = []
+}
+
+/*
+Tags
+*/
+variable "name" {
+  description = "Input the name of stack"
+  default     = ""
+}
+
+variable "tag_project" {
+  description = "The name of the project this resource belongs to"
+  default     = ""
+}
+
+variable "tag_env" {
+  description = "The environemnt this resource is being deployed to"
+  default     = ""
+}
+
+variable "tag_costcenter" {
+  description = "The cost center"
+  default     = ""
+}
+
+variable "tag_createdby" {
+  description = "Who created this resource"
+  default     = ""
+}
