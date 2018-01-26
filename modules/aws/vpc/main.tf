@@ -111,21 +111,6 @@ resource "aws_route_table_association" "public" {
 }
 
 /*
-Private routes
-*/
-resource "aws_route_table" "private" {
-  count                        = "${length(var.private_subnets) > 0 ? 1 : 0}"
-  vpc_id                       = "${aws_vpc.mod.id}"
-  tags {
-    Name                       = "${var.name}.pri.rt.${count.index}"
-    Project                    = "${var.tag_project}"
-    Environment                = "${var.tag_env}"
-    awsCostCenter              = "${var.tag_costcenter}"
-    CreatedBy                  = "${var.tag_createdby}"
-  }
-}
-
-/*
 Private Subnets
 */
 resource "aws_subnet" "private" {
@@ -139,6 +124,21 @@ resource "aws_subnet" "private" {
     Environment               = "${var.tag_env}"
     awsCostCenter             = "${var.tag_costcenter}"
     CreatedBy                 = "${var.tag_createdby}"
+  }
+}
+
+/*
+Private route tables
+*/
+resource "aws_route_table" "private" {
+  count                        = "${length(var.private_subnets) > 0 ? length(var.private_subnets) : 0}"
+  vpc_id                       = "${aws_vpc.mod.id}"
+  tags {
+    Name                       = "${var.name}.pri.rt.${count.index}"
+    Project                    = "${var.tag_project}"
+    Environment                = "${var.tag_env}"
+    awsCostCenter              = "${var.tag_costcenter}"
+    CreatedBy                  = "${var.tag_createdby}"
   }
 }
 
@@ -167,11 +167,18 @@ resource "aws_nat_gateway" "mod" {
   depends_on = ["aws_internet_gateway.mod"]
 }
 
+resource "aws_route" "private" {
+  count                        = "${length(var.private_subnets) > 0 ? length(var.private_subnets) : 0}"
+  route_table_id               = "${element(aws_route_table.private.*.id, count.index)}"
+  destination_cidr_block       = "0.0.0.0/0"
+  gateway_id                   = "${element(aws_nat_gateway.mod.*.id, count.index)}"
+}
+
 /*
 Private Route Association
 */
 resource "aws_route_table_association" "private" {
-  count = "${length(var.private_subnets)}"
-  subnet_id      = "${element(aws_subnet.private.*.id, count.index)}"
-  route_table_id = "${element(aws_route_table.private.*.id, count.index)}"
+  count                       = "${length(var.private_subnets) > 0 ? length(var.private_subnets) : 0}"
+  subnet_id                   = "${element(aws_subnet.private.*.id, count.index)}"
+  route_table_id              = "${element(aws_route_table.private.*.id, count.index)}"
 }
