@@ -23,17 +23,17 @@ variable dhcp_domain_name {
   default = ""
 }
 
-/*
+
 variable dhcp_dns_name_servers {
-  description = "Search list of the IP's or FQDN of your DNS servers (WIP)"
-  defautl = []
+  description = "Search list of the IP's or FQDN of your DNS servers, by default use the AWS ones"
+  defautl = "AmazonProvidedDNS"
 }
 
 variable dhcp_dns_ntp_servers {
   description = "Search list of the IP's or time servers (WIP)"
   defautl = []
 }
-*/
+
 
 variable enable_dhcp {
   description = "Set to true/false if you want to use this resource"

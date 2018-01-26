@@ -25,7 +25,7 @@ DHCP options Set
 resource "aws_vpc_dhcp_options" "mod" {
   count                        = "${length(var.public_subnets) > 0 ? 1 : 0}"
   domain_name                  = "${var.dhcp_domain_name}"
-  # domain_name_servers        = ["${var.dhcp_dns1}", "${var.dhcp_dns2}", "${var.dhcp_dns3}"]
+  domain_name_servers          = "${var.dhcp_dns_name_servers}"
   # ntp_servers                = ["${var.dhcp_ntp1}", "${var.dhcp_ntp2}"]
   tags {
     Name                       = "${var.name}.dhcp.${count.index}"
