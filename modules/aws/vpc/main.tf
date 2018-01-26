@@ -46,6 +46,24 @@ resource "aws_vpc_dhcp_options_association" "mod" {
 }
 
 /*
+Public Subnets
+*/
+resource "aws_subnet" "public" {
+  count                        = "${length(var.public_subnets) > 0 ? length(var.private_subnets) : 0}"
+  vpc_id                       = "${aws_vpc.mod.id}"
+  cidr_block                   = "${element(var.public_subnets, count.index)}"
+  availability_zone            = "${element(var.azs, count.index)}"
+  map_public_ip_on_launch      = true
+  tags {
+    Name                       = "${var.name}.pub.subnet.${count.index}"
+    Project                    = "${var.tag_project}"
+    Environment                = "${var.tag_env}"
+    awsCostCenter              = "${var.tag_costcenter}"
+    CreatedBy                  = "${var.tag_createdby}"
+  }
+}
+
+/*
 Internet Gateway
 */
 resource "aws_internet_gateway" "mod" {
@@ -66,34 +84,13 @@ Publiс routes
 resource "aws_route_table" "public" {
   count                        = "${length(var.public_subnets) > 0 ? 1 : 0}"
   vpc_id                       = "${aws_vpc.mod.id}"
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = "${aws_internet_gateway.mod.id}"
+  }
   # propagating_vgws           = ["${var.public_propagating_vgws}"]
   tags {
     Name                       = "${var.name}.pub.rt.${count.index}"
-    Project                    = "${var.tag_project}"
-    Environment                = "${var.tag_env}"
-    awsCostCenter              = "${var.tag_costcenter}"
-    CreatedBy                  = "${var.tag_createdby}"
-  }
-}
-
-resource "aws_route" "public_internet_gateway" {
-  count                        = "${length(var.public_subnets) > 0 ? 1 : 0}"
-  route_table_id               = "${aws_route_table.public.id}"
-  destination_cidr_block       = "0.0.0.0/0"
-  gateway_id                   = "${aws_internet_gateway.mod.id}"
-}
-
-/*
-Public Subnets
-*/
-resource "aws_subnet" "public" {
-  count                        = "${length(var.public_subnets) > 0 ? length(var.private_subnets) : 0}"
-  vpc_id                       = "${aws_vpc.mod.id}"
-  cidr_block                   = "${element(var.public_subnets, count.index)}"
-  availability_zone            = "${element(var.azs, count.index)}"
-  map_public_ip_on_launch      = true
-  tags {
-    Name                       = "${var.name}.pub.subnet.${count.index}"
     Project                    = "${var.tag_project}"
     Environment                = "${var.tag_env}"
     awsCostCenter              = "${var.tag_costcenter}"
@@ -133,6 +130,10 @@ Private route tables
 resource "aws_route_table" "private" {
   count                        = "${length(var.private_subnets) > 0 ? length(var.private_subnets) : 0}"
   vpc_id                       = "${aws_vpc.mod.id}"
+  route {
+    cidr_block = "0.0.0.0/0"
+    nat_gateway_id = "${element(aws_nat_gateway.mod.*.id, count.index)}"
+  }
   tags {
     Name                       = "${var.name}.pri.rt.${count.index}"
     Project                    = "${var.tag_project}"
@@ -165,13 +166,6 @@ resource "aws_nat_gateway" "mod" {
   #   CreatedBy                  = "${var.tag_createdby}"
   # }
   depends_on = ["aws_internet_gateway.mod"]
-}
-
-resource "aws_route" "private" {
-  count                        = "${length(var.private_subnets) > 0 ? length(var.private_subnets) : 0}"
-  route_table_id               = "${element(aws_route_table.private.*.id, count.index)}"
-  destination_cidr_block       = "0.0.0.0/0"
-  gateway_id                   = "${element(aws_nat_gateway.mod.*.id, count.index)}"
 }
 
 /*
