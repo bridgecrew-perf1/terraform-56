@@ -1,5 +1,5 @@
 terraform {
-  required_version  = "0.9.8"
+  required_version  = "> 0.9.8"
 }
 
 resource "aws_iam_instance_profile" "mod" {
