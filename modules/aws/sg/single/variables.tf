@@ -3,6 +3,12 @@ variable "vpc_id" {
   description = "The vpc id to create the security group in"
 }
 
+variable "allowed_cidr" {
+  description = "The ip(s) allowed to ssh in"
+  type = "list"
+  default = []
+}
+
 /*
 Tags
 */
