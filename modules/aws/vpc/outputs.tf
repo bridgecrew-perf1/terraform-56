@@ -1,5 +1,5 @@
 output "vpc_id" {
-  value = "${aws_vpc.mod.id}"
+  value = "${aws_vpc.main.id}"
 }
 
 output "subnet_public_id" {
@@ -8,4 +8,8 @@ output "subnet_public_id" {
 
 output "subnet_private_id" {
   value = ["${aws_subnet.private.*.id}"]
+}
+
+output "subnet_rds_id" {
+  value = ["${aws_subnet.rds.*.id}"]
 }

@@ -9,6 +9,11 @@ variable "iam_policy_path" {
 }
 
 variable "iam_policy_doc" {
-  description = "ASG policy document, recommended to use a file when you are defining your stack"
+  description = "policy document"
+  default = ""
+}
+
+variable "assume_role_policy" {
+  description = "Service assume role policy document"
   default = ""
 }

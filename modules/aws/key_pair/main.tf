@@ -2,7 +2,7 @@ terraform {
   required_version  = "> 0.9.8"
 }
 
-resource "aws_key_pair" "mod" {
+resource "aws_key_pair" "main" {
   key_name                    = "${var.key_name}"
   public_key                  = "${var.key_pair}"
 }

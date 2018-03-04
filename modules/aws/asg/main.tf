@@ -5,7 +5,7 @@ terraform {
 /*
 Launch configuration
 */
-resource "aws_launch_configuration" "mod" {
+resource "aws_launch_configuration" "main" {
   count                       = "${var.create_asg}"
   name                        = "${var.asg_name}.${var.name}.${count.index}"
   image_id                    = "${var.ami_id}"
@@ -30,10 +30,10 @@ resource "aws_launch_configuration" "mod" {
 Auto Scaling group configuration
 */
 
-resource "aws_autoscaling_group" "mod" {
+resource "aws_autoscaling_group" "main" {
   count = "${var.create_asg}"
   name                        = "${var.asg_name}.${var.name}.${count.index}"
-  launch_configuration        = "${aws_launch_configuration.mod.id}"
+  launch_configuration        = "${aws_launch_configuration.main.id}"
   vpc_zone_identifier         = ["${var.vpc_zone_identifier}"]
   max_size                    = "${var.max_size}"
   min_size                    = "${var.min_size}"
@@ -80,7 +80,6 @@ resource "aws_autoscaling_group" "mod" {
     },
   ]
 }
-
 
 
 

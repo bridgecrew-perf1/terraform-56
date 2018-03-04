@@ -23,17 +23,23 @@ variable dhcp_domain_name {
   default = ""
 }
 
-variable dhcp_dns_name_servers {
-  description = "Search list of the IP's or FQDN of your DNS servers, by default use the AWS ones"
-  type = "list"
-  default = ["AmazonProvidedDNS"]
+variable "map_ip" {
+  description = "Will the server have or not a public IP if on a public subnet"
+  default     = false
 }
 
-# variable dhcp_dns_ntp_servers {
-#   description = "Search list of the IP's or time servers (WIP)"
-#   default = []
-# }
 
+variable domain_name_servers {
+  description = "Search list of the IP's or FQDN of your DNS servers (WIP)"
+  type = "list"
+  default = []
+}
+/*
+variable dns_ntp_servers {
+  description = "Search list of the IP's or time servers (WIP)"
+  defautl = []
+}
+*/
 
 variable enable_dhcp {
   description = "Set to true/false if you want to use this resource"
@@ -52,6 +58,11 @@ variable public_subnets {
 
 variable private_subnets {
   description = "Ranges for the VPC Private subnets"
+  default = []
+}
+
+variable rds_subnets {
+  description = "Ranges for the VPC Private RDS subnets"
   default = []
 }
 
