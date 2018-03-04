@@ -66,6 +66,11 @@ variable rds_subnets {
   default = []
 }
 
+variable rs_subnets {
+  description = "Ranges for the VPC Private Redshift subnets"
+  default = []
+}
+
 /*
 Tags
 */
