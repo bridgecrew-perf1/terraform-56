@@ -10,7 +10,8 @@ variable "key_name" {
 
 variable "security_groups" {
   description = "The list of security groups to use with the ASG instances"
-  default = ""
+  type = "list"
+  default = []
 }
 
 variable "asg_name" {
