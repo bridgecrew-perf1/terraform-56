@@ -2,38 +2,10 @@ terraform {
   required_version  = "> 0.9.8"
 }
 
-/*
-Launch configuration
-*/
-resource "aws_launch_configuration" "main" {
-  count                       = "${var.create_asg}"
-  name                        = "${var.asg_name}.${var.name}.${count.index}"
-  image_id                    = "${var.ami_id}"
-  instance_type               = "${var.instance_type}"
-  iam_instance_profile        = "${var.instance_iam_role}"
-  key_name                    = "${var.key_name}"
-  security_groups             = ["${var.security_groups}"]
-  associate_public_ip_address = "${var.associate_public_ip_address}"
-  user_data                   = "${var.user_data}"
-  enable_monitoring           = "${var.enable_monitoring}"
-  # placement_tenancy           = "${var.placement_tenancy}"
-  ebs_optimized               = "${var.ebs_optimized}"
-  ebs_block_device            = "${var.ebs_block_device}"
-  root_block_device           = "${var.root_block_device}"
-  lifecycle {
-    create_before_destroy     = true
-  }
-  # spot_price                  = "${var.spot_price}"  # placement_tenancy does not work with spot_price
-}
-
-/*
-Auto Scaling group configuration
-*/
-
 resource "aws_autoscaling_group" "main" {
-  count = "${var.create_asg}"
-  name                        = "${var.asg_name}.${var.name}.${count.index}"
-  launch_configuration        = "${aws_launch_configuration.main.id}"
+  count                       = "${var.count}"
+  name                        = "${var.name}.${count.index}.as"
+  launch_configuration        = "${var.launch_configuration}"
   vpc_zone_identifier         = ["${var.vpc_zone_identifier}"]
   max_size                    = "${var.max_size}"
   min_size                    = "${var.min_size}"
@@ -55,7 +27,7 @@ resource "aws_autoscaling_group" "main" {
   tags = [
     {
       key                 = "Name"
-      value               = "${var.name}.asg.${count.index}"
+      value               = "${var.name}.${count.index}.as"
       propagate_at_launch = true
     },
     {
