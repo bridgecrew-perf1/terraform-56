@@ -3,8 +3,7 @@ terraform {
 }
 
 resource "aws_autoscaling_group" "main" {
-  count                       = "${var.count}"
-  name                        = "${var.name}.${count.index}.as"
+  name                        = "${var.name}.as"
   launch_configuration        = "${var.launch_configuration}"
   vpc_zone_identifier         = ["${var.vpc_zone_identifier}"]
   max_size                    = "${var.max_size}"

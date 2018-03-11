@@ -1,13 +1,6 @@
-
 /*
 Auto Scaling variable definition
 */
-
-variable "count" {
-  description = "Settings for the device block, value changes delete/create instance"
-  type = "list"
-  default = []
-}
 
 variable "vpc_zone_identifier" {
   description = "A list of subnet IDs for the ec2 instances"
