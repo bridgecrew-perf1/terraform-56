@@ -49,10 +49,10 @@ variable "enable_monitoring" {
   default = true
 }
 
-# variable "placement_tenancy" {
-#   description = "The type of host instance tenancy, default or dedicated, this modules are done for default"
-#   default = "default"
-# }
+variable "placement_tenancy" {
+  description = "The type of host instance tenancy, default or dedicated, this modules are done for default"
+  default = "default"
+}
 
 variable "ebs_optimized" {
   description = "Set this option to use EBS on the root device, true/false (without quotes)"

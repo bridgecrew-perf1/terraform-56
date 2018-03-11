@@ -15,7 +15,7 @@ resource "aws_launch_configuration" "main" {
   associate_public_ip_address = "${var.associate_public_ip_address}"
   user_data                   = "${var.user_data}"
   enable_monitoring           = "${var.enable_monitoring}"
-  # placement_tenancy           = "${var.placement_tenancy}"
+  placement_tenancy           = "${var.placement_tenancy}"
   ebs_optimized               = "${var.ebs_optimized}"
   ebs_block_device            = "${var.ebs_block_device}"
   root_block_device           = "${var.root_block_device}"
