@@ -38,33 +38,33 @@ variable "desired_capacity" {
   default = "0"
 }
 
-# variable "load_balancers" {
-#   description = "List of Loadbalancers to use (optional) requires the Load Balancer module"
-#   type = "list"
-#   default = []
-# }
+variable "load_balancers" {
+  description = "List of Loadbalancers to use (optional) requires the Load Balancer module"
+  type = "list"
+  default = []
+}
 
 
-# variable "health_check_grace_period" {
-#   description = "Time after instance comes into service before checking health OK/KO."
-#   default = "300"
-# }
+variable "health_check_grace_period" {
+  description = "Time after instance comes into service before checking health OK/KO."
+  default = "300"
+}
 
-# variable "health_check_type" {
-#   description = "Chose ELB/EC2 for the check type"
-#   default = "EC2"
-# }
+variable "health_check_type" {
+  description = "Chose ELB/EC2 for the check type"
+  default = "EC2"
+}
 
-# variable "wait_for_elb_capacity" {
-#   description = "Makes min_elb_capacity irrelevant due to precedence and waits for the instances to come to healthy status"
-#   default = 
-# }
+variable "wait_for_elb_capacity" {
+  description = "Makes min_elb_capacity irrelevant due to precedence and waits for the instances to come to healthy status"
+  default = 
+}
 
-# variable "target_group_arns" {
-#   description = "List of ALBs arns to use"
-#   type = "list"
-#   default = [] 
-# }
+variable "target_group_arns" {
+  description = "List of ALBs arns to use"
+  type = "list"
+  default = [] 
+}
 
 variable "default_cooldown" {
   description = "Default time to wait before scaling up/down"

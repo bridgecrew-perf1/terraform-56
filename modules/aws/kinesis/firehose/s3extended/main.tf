@@ -36,7 +36,7 @@ resource "aws_kinesis_firehose_delivery_stream" "main" {
     }
   }
   # tags {
-  #   Name                       = "${var.name}.vpc.${count.index}"
+  #   Name                       = "${var.name}"
   #   Project                    = "${var.tag_project}"
   #   Environment                = "${var.tag_env}"
   #   awsCostCenter              = "${var.tag_costcenter}"

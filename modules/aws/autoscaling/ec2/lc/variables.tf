@@ -8,8 +8,8 @@ variable "name" {
   default = ""
 }
 
-variable "version" {
-  description = "The version og the config to avoid naming conflict"
+variable "lc_version" {
+  description = "The version of the config to avoid naming conflict"
   default = ""
 }
 

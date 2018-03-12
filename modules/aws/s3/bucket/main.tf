@@ -7,7 +7,7 @@ resource "aws_s3_bucket" "main" {
   acl    = "${var.acl}"
   force_destroy = "${var.destroy}"
   tags {
-    Name                       = "${var.name}.vpc.${count.index}"
+    Name                       = "${var.name}"
     Project                    = "${var.tag_project}"
     Environment                = "${var.tag_env}"
     awsCostCenter              = "${var.tag_costcenter}"
