@@ -2,6 +2,16 @@
 Auto Scaling variable definition
 */
 
+variable "name" {
+  description = "Input the name of stack"
+  default     = ""
+}
+
+variable "version" {
+  description = "The version og the config to avoid naming conflict"
+  default = ""
+}
+
 variable "vpc_zone_identifier" {
   description = "A list of subnet IDs for the ec2 instances"
   type = "list"
@@ -101,10 +111,6 @@ variable "protect_from_scale_in" {
 /*
 Tags
 */
-variable "name" {
-  description = "Input the name of stack"
-  default     = ""
-}
 
 variable "tag_project" {
   description = "The name of the project this resource belongs to"

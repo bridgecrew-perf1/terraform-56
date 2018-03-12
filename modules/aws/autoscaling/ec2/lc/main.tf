@@ -6,7 +6,7 @@ terraform {
 Launch configuration
 */
 resource "aws_launch_configuration" "main" {
-  name                        = "${var.name}.lc"
+  name                        = "${var.name}.${var.version}.lc"
   image_id                    = "${var.ami_id}"
   instance_type               = "${var.instance_type}"
   iam_instance_profile        = "${var.instance_iam_role}"

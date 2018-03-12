@@ -8,6 +8,11 @@ variable "name" {
   default = ""
 }
 
+variable "version" {
+  description = "The version og the config to avoid naming conflict"
+  default = ""
+}
+
 variable "ami_id" {
   description = "AWS image if to use"
   default = ""
