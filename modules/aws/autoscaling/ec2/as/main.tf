@@ -3,7 +3,7 @@ terraform {
 }
 
 resource "aws_autoscaling_group" "main" {
-  name                        = "${var.name}.${var.as_version}.as"
+  name                        = "${var.as_version}.${var.name}.as"
   launch_configuration        = "${var.launch_configuration}"
   vpc_zone_identifier         = ["${var.vpc_zone_identifier}"]
   max_size                    = "${var.max_size}"
@@ -26,7 +26,7 @@ resource "aws_autoscaling_group" "main" {
   tags = [
     {
       key                 = "Name"
-      value               = "${var.name}.${count.index}.as"
+      value               = "${var.as_version}.${var.name}.as"
       propagate_at_launch = true
     },
     {
