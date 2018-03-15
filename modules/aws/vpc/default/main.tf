@@ -146,6 +146,7 @@ resource "aws_subnet" "private" {
 EIP for NAT Gateway
 */
 resource "aws_eip" "nat" {
+  count                        = "${length(var.private_subnets) > 0 ? length(var.private_subnets) : 0}"
   vpc                          = true
 }
 
@@ -153,8 +154,9 @@ resource "aws_eip" "nat" {
 NAT Gateway
 */
 resource "aws_nat_gateway" "main" {
-  allocation_id                = "${aws_eip.nat.id}"
-  subnet_id                    = "${aws_subnet.public.0.id}"
+  count                        = "${length(var.private_subnets) > 0 ? length(var.private_subnets) : 0}"
+  allocation_id                = "${element(aws_eip.nat.*.id, count.index)}"
+  subnet_id                    = "${element(aws_subnet.public.*.id, count.index)}"
   tags {
     Name                       = "${var.name}.ntgw.${count.index}"
     Project                    = "${var.tag_project}"
@@ -169,7 +171,7 @@ resource "aws_route" "private_nat_gateway" {
   count                        = "${length(var.private_subnets) > 0 ? length(var.private_subnets) : 0}"
   route_table_id               = "${element(aws_route_table.private.*.id, count.index)}"
   destination_cidr_block       = "0.0.0.0/0"
-  nat_gateway_id               = "${aws_nat_gateway.main.id}"
+  nat_gateway_id               = "${element(aws_nat_gateway.main.*.id, count.index)}"
 }
 
 /*
