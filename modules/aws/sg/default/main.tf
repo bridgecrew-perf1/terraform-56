@@ -1,5 +1,5 @@
 terraform {
-  required_version  = "> 0.9.8"
+  required_version  = "> 0.11.2"
 }
 
 /*
@@ -15,12 +15,14 @@ resource "aws_security_group" "main" {
     to_port                   = "${var.igr_to}"
     protocol                  = "${var.igr_protocol}"
     cidr_blocks               = ["${var.igr_cidr_blocks}"]
+    security_groups           = ["${var.igr_security_groups}"]
   }
   egress {
     from_port                 = "${var.egr_from}"
     to_port                   = "${var.egr_to}"
     protocol                  = "${var.egr_protocol}"
     cidr_blocks               = ["${var.egr_cidr_blocks}"]
+    security_groups           = ["${var.egr_security_groups}"]
   }
   tags {
     Name                       = "${var.name}"

@@ -29,6 +29,12 @@ variable "igr_cidr_blocks" {
   default = []
 }
 
+variable "igr_security_groups" {
+  description = ""
+  type = "list"
+  default = []
+}
+
 variable "egr_from" {
   description = ""
   default = ""
@@ -50,6 +56,11 @@ variable "egr_cidr_blocks" {
   default = []
 }
 
+variable "egr_security_groups" {
+  description = ""
+  type = "list"
+  default = []
+}
 
 /*
 Tags

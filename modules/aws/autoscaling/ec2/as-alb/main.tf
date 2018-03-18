@@ -1,9 +1,9 @@
-terraform {
+  terraform {
   required_version  = "> 0.9.8"
 }
 
 resource "aws_autoscaling_group" "main" {
-  name                        = "${var.name}.${var.as_version}.as"
+  name                        = "${var.as_version}.${var.name}.as"
   launch_configuration        = "${var.launch_configuration}"
   vpc_zone_identifier         = ["${var.vpc_zone_identifier}"]
   max_size                    = "${var.max_size}"
