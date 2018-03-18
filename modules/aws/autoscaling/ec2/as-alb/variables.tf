@@ -57,7 +57,7 @@ variable "health_check_type" {
 
 variable "wait_for_elb_capacity" {
   description = "Makes min_elb_capacity irrelevant due to precedence and waits for the instances to come to healthy status"
-  default = 
+  default = ""
 }
 
 variable "target_group_arns" {
@@ -68,6 +68,11 @@ variable "target_group_arns" {
 
 variable "default_cooldown" {
   description = "Default time to wait before scaling up/down"
+  default = ""
+}
+
+variable "min_elb_capacity" {
+  description = ""
   default = ""
 }
 
