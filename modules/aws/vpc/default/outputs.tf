@@ -13,3 +13,11 @@ output "subnet_private_id" {
 output "subnet_rds_id" {
   value = ["${aws_subnet.rds.*.id}"]
 }
+
+output "subnet_ecs_id" {
+  value = ["${aws_subnet.ecs.*.id}"]
+}
+
+output "subnet_rs_id" {
+  value = ["${aws_subnet.rs.*.id}"]
+}

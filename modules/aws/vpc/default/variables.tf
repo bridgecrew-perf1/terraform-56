@@ -66,6 +66,11 @@ variable rds_subnets {
   default = []
 }
 
+variable ecs_subnets {
+  description = "Ranges for the VPC Private ECS subnets"
+  default = []
+}
+
 variable rs_subnets {
   description = "Ranges for the VPC Private Redshift subnets"
   default = []
@@ -79,22 +84,27 @@ variable "name" {
   default     = ""
 }
 
-variable "tag_project" {
+variable "tagpro" {
   description = "The name of the project this resource belongs to"
   default     = ""
 }
 
-variable "tag_env" {
+variable "tagenv" {
   description = "The environemnt this resource is being deployed to"
   default     = ""
 }
 
-variable "tag_costcenter" {
+variable "tagapp" {
   description = "The cost center"
   default     = ""
 }
 
-variable "tag_createdby" {
+variable "tagown" {
+  description = "The Owner of the resource"
+  default     = ""
+}
+
+variable "tagmod" {
   description = "Who created this resource"
   default     = ""
 }
