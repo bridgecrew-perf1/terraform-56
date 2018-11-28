@@ -10,13 +10,12 @@ resource "aws_vpc" "main" {
   instance_tenancy              = "${var.vpc_tenancy}"
   enable_dns_support            = "${var.enable_dns_support}"
   enable_dns_hostnames          = "${var.enable_dns_hostnames}"
-  tags {
-    Name                        = "${var.name}.vpc.${count.index}"
-    Project                     = "${var.tagpro}"
-    Environment                 = "${var.tagenv}"
-    Application                 = "${var.tagapp}"
-    Owner                       = "${var.tagapp}"
-    LastModifyBy                = "${var.tagmod}"
+  tags { 
+    Name                        = "${var.name}"
+    Project                     = "${var.tag_project}"
+    Environment                 = "${var.tag_env}"
+    awsCostCenter               = "${var.tag_costcenter}"
+    CreatedBy                   = "${var.tag_createdby}"
   }
 }
 
@@ -24,14 +23,14 @@ resource "aws_vpc" "main" {
 VPC flow logs
 */
 
-resource "aws_flow_log" "test_flow_log" {
-  log_group_name = "${aws_cloudwatch_log_group.test_log_group.name}"
+resource "aws_flow_log" "main" {
+  log_group_name = "${aws_cloudwatch_log_group.main.name}"
   iam_role_arn   = "${aws_iam_role.main.arn}"
   vpc_id         = "${aws_vpc.main.id}"
   traffic_type   = "ALL"
 }
 
-resource "aws_cloudwatch_log_group" "test_log_group" {
+resource "aws_cloudwatch_log_group" "main" {
   name = "/awsvpc/${var.name}"
 }
 
@@ -89,12 +88,11 @@ resource "aws_vpc_dhcp_options" "main" {
   domain_name_servers           = ["${var.domain_name_servers}"]
   # ntp_servers                = ["${var.dhcp_ntp1}", "${var.dhcp_ntp2}"]
   tags {
-    Name                        = "${var.name}.dhcp.${count.index}"
-    Project                     = "${var.tagpro}"
-    Environment                 = "${var.tagenv}"
-    Application                 = "${var.tagapp}"
-    Owner                       = "${var.tagapp}"
-    LastModifyBy                = "${var.tagmod}"
+    Name                        = "${var.name}"
+    Project                     = "${var.tag_project}"
+    Environment                 = "${var.tag_env}"
+    awsCostCenter               = "${var.tag_costcenter}"
+    CreatedBy                   = "${var.tag_createdby}"
   }
 }
 
@@ -114,12 +112,11 @@ resource "aws_internet_gateway" "main" {
   count                         = "${length(var.public_subnets) > 0 ? 1 : 0}"
   vpc_id                        = "${aws_vpc.main.id}"
   tags {
-    Name                        = "${var.name}.ig.${count.index}"
-    Project                     = "${var.tagpro}"
-    Environment                 = "${var.tagenv}"
-    Application                 = "${var.tagapp}"
-    Owner                       = "${var.tagapp}"
-    LastModifyBy                = "${var.tagmod}"
+    Name                        = "${var.name}-igw"
+    Project                     = "${var.tag_project}"
+    Environment                 = "${var.tag_env}"
+    awsCostCenter               = "${var.tag_costcenter}"
+    CreatedBy                   = "${var.tag_createdby}"
   }
 }
 
@@ -132,11 +129,10 @@ resource "aws_route_table" "public" {
   # propagating_vgws           = ["${var.public_propagating_vgws}"]
   tags {
     Name                        = "${var.name}.pub.rt.${count.index}"
-    Project                     = "${var.tagpro}"
-    Environment                 = "${var.tagenv}"
-    Application                 = "${var.tagapp}"
-    Owner                       = "${var.tagapp}"
-    LastModifyBy                = "${var.tagmod}"
+    Project                     = "${var.tag_project}"
+    Environment                 = "${var.tag_env}"
+    awsCostCenter               = "${var.tag_costcenter}"
+    CreatedBy                   = "${var.tag_createdby}"
   }
 }
 
@@ -158,11 +154,10 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch       = "${var.map_ip}"
   tags {
     Name                        = "${var.name}.pub.subnet.${count.index}"
-    Project                     = "${var.tagpro}"
-    Environment                 = "${var.tagenv}"
-    Application                 = "${var.tagapp}"
-    Owner                       = "${var.tagapp}"
-    LastModifyBy                = "${var.tagmod}"
+    Project                     = "${var.tag_project}"
+    Environment                 = "${var.tag_env}"
+    awsCostCenter               = "${var.tag_costcenter}"
+    CreatedBy                   = "${var.tag_createdby}"
   }
 }
 
@@ -183,11 +178,10 @@ resource "aws_route_table" "private" {
   vpc_id                       = "${aws_vpc.main.id}"
   tags {
     Name                       = "${var.name}.pri.rt.${count.index}"
-    Project                    = "${var.tagpro}"
-    Environment                = "${var.tagenv}"
-    Application                = "${var.tagapp}"
-    Owner                      = "${var.tagapp}"
-    LastModifyBy               = "${var.tagmod}"
+    Project                     = "${var.tag_project}"
+    Environment                 = "${var.tag_env}"
+    awsCostCenter               = "${var.tag_costcenter}"
+    CreatedBy                   = "${var.tag_createdby}"
   }
 }
 
@@ -201,11 +195,10 @@ resource "aws_subnet" "private" {
   availability_zone            = "${element(var.azs, count.index)}"
   tags {
     Name                       = "${var.name}.priv.subnet.${count.index}"
-    Project                    = "${var.tagpro}"
-    Environment                = "${var.tagenv}"
-    Application                = "${var.tagapp}"
-    Owner                      = "${var.tagapp}"
-    LastModifyBy               = "${var.tagmod}"
+    Project                     = "${var.tag_project}"
+    Environment                 = "${var.tag_env}"
+    awsCostCenter               = "${var.tag_costcenter}"
+    CreatedBy                   = "${var.tag_createdby}"
   }
 }
 
@@ -225,12 +218,11 @@ resource "aws_nat_gateway" "main" {
   allocation_id                = "${element(aws_eip.nat.*.id, count.index)}"
   subnet_id                    = "${element(aws_subnet.public.*.id, count.index)}"
   tags {
-    Name                       = "${var.name}"
-    Project                    = "${var.tagpro}"
-    Environment                = "${var.tagenv}"
-    Application                = "${var.tagapp}"
-    Owner                      = "${var.tagapp}"
-    LastModifyBy               = "${var.tagmod}"
+    Name                        = "${var.name}"
+    Project                     = "${var.tag_project}"
+    Environment                 = "${var.tag_env}"
+    awsCostCenter               = "${var.tag_costcenter}"
+    CreatedBy                   = "${var.tag_createdby}"
   }
   depends_on                   = ["aws_internet_gateway.main"]
 }
@@ -253,113 +245,72 @@ resource "aws_route_table_association" "private" {
 
 
 /*
-RDS Network
+DB's Network
 */
-resource "aws_route_table" "rds" {
+resource "aws_route_table" "db" {
   count                        = "${length(var.rds_subnets) > 0 ? length(var.rds_subnets) : 0}"
   vpc_id                       = "${aws_vpc.main.id}"
   tags {
-    Name                       = "${var.name}.rds.rt.${count.index}"
-    Project                    = "${var.tagpro}"
-    Environment                = "${var.tagenv}"
-    Application                = "${var.tagapp}"
-    Owner                      = "${var.tagapp}"
-    LastModifyBy               = "${var.tagmod}"
+    Name                       = "${var.name}.db.rt.${count.index}"
+    Project                     = "${var.tag_project}"
+    Environment                 = "${var.tag_env}"
+    awsCostCenter               = "${var.tag_costcenter}"
+    CreatedBy                   = "${var.tag_createdby}"
   }
 }
 
-resource "aws_subnet" "rds" {
+resource "aws_subnet" "db" {
   count                        = "${length(var.rds_subnets) > 0 ? length(var.rds_subnets) : 0}"
   vpc_id                       = "${aws_vpc.main.id}"
   cidr_block                   = "${element(var.rds_subnets, count.index)}"
   availability_zone            = "${element(var.azs, count.index)}"
   tags {
-    Name                       = "${var.name}.rds.subnet.${count.index}"
-    Project                    = "${var.tagpro}"
-    Environment                = "${var.tagenv}"
-    Application                = "${var.tagapp}"
-    Owner                      = "${var.tagapp}"
-    LastModifyBy               = "${var.tagmod}"
+    Name                       = "${var.name}.db.subnet.${count.index}"
+    Project                     = "${var.tag_project}"
+    Environment                 = "${var.tag_env}"
+    awsCostCenter               = "${var.tag_costcenter}"
+    CreatedBy                   = "${var.tag_createdby}"
   }
 }
 
-resource "aws_route_table_association" "rds" {
+resource "aws_route_table_association" "db" {
   count                        = "${length(var.rds_subnets)}"
-  subnet_id                    = "${element(aws_subnet.rds.*.id, count.index)}"
-  route_table_id               = "${element(aws_route_table.rds.*.id, count.index)}"
+  subnet_id                    = "${element(aws_subnet.db.*.id, count.index)}"
+  route_table_id               = "${element(aws_route_table.db.*.id, count.index)}"
 }
 
 /*
-ecs network
+App's network
 */
-resource "aws_route_table" "ecs" {
+resource "aws_route_table" "app" {
   count                        = "${length(var.ecs_subnets) > 0 ? length(var.ecs_subnets) : 0}"
   vpc_id                       = "${aws_vpc.main.id}"
   tags {
-    Name                       = "${var.name}.ecs.rt.${count.index}"
-    Project                    = "${var.tagpro}"
-    Environment                = "${var.tagenv}"
-    Application                = "${var.tagapp}"
-    Owner                      = "${var.tagapp}"
-    LastModifyBy               = "${var.tagmod}"
+    Name                       = "${var.name}.app.rt.${count.index}"
+    Project                     = "${var.tag_project}"
+    Environment                 = "${var.tag_env}"
+    awsCostCenter               = "${var.tag_costcenter}"
+    CreatedBy                   = "${var.tag_createdby}"
   }
 }
 
-resource "aws_subnet" "ecs" {
+resource "aws_subnet" "app" {
   count                        = "${length(var.ecs_subnets) > 0 ? length(var.ecs_subnets) : 0}"
   vpc_id                       = "${aws_vpc.main.id}"
   cidr_block                   = "${element(var.ecs_subnets, count.index)}"
   availability_zone            = "${element(var.azs, count.index)}"
   tags {
-    Name                       = "${var.name}.ecs.subnet.${count.index}"
-    Project                    = "${var.tagpro}"
-    Environment                = "${var.tagenv}"
-    Application                = "${var.tagapp}"
-    Owner                      = "${var.tagapp}"
-    LastModifyBy               = "${var.tagmod}"
+    Name                       = "${var.name}.app.subnet.${count.index}"
+    Project                     = "${var.tag_project}"
+    Environment                 = "${var.tag_env}"
+    awsCostCenter               = "${var.tag_costcenter}"
+    CreatedBy                   = "${var.tag_createdby}"
   }
 }
 
-resource "aws_route_table_association" "ecs" {
+resource "aws_route_table_association" "app" {
   count                        = "${length(var.ecs_subnets)}"
-  subnet_id                    = "${element(aws_subnet.ecs.*.id, count.index)}"
-  route_table_id               = "${element(aws_route_table.ecs.*.id, count.index)}"
+  subnet_id                    = "${element(aws_subnet.app.*.id, count.index)}"
+  route_table_id               = "${element(aws_route_table.app.*.id, count.index)}"
 }
 
-/*
-RedShift Network
-*/
-
-resource "aws_route_table" "rs" {
-  count                        = "${length(var.rs_subnets) > 0 ? length(var.rs_subnets) : 0}"
-  vpc_id                       = "${aws_vpc.main.id}"
-  tags {
-    Name                       = "${var.name}.redshift.rt.${count.index}"
-    Project                    = "${var.tagpro}"
-    Environment                = "${var.tagenv}"
-    Application                = "${var.tagapp}"
-    Owner                      = "${var.tagapp}"
-    LastModifyBy               = "${var.tagmod}"
-  }
-}
-
-resource "aws_subnet" "rs" {
-  count                        = "${length(var.rs_subnets) > 0 ? length(var.rs_subnets) : 0}"
-  vpc_id                       = "${aws_vpc.main.id}"
-  cidr_block                   = "${element(var.rs_subnets, count.index)}"
-  availability_zone            = "${element(var.azs, count.index)}"
-  tags {
-    Name                       = "${var.name}.redshift.subnet.${count.index}"
-    Project                    = "${var.tagpro}"
-    Environment                = "${var.tagenv}"
-    Application                = "${var.tagapp}"
-    Owner                      = "${var.tagapp}"
-    LastModifyBy               = "${var.tagmod}"
-  }
-}
-
-resource "aws_route_table_association" "rs" {
-  count                        = "${length(var.rs_subnets)}"
-  subnet_id                    = "${element(aws_subnet.rs.*.id, count.index)}"
-  route_table_id               = "${element(aws_route_table.rs.*.id, count.index)}"
-}

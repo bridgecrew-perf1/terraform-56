@@ -1,4 +1,5 @@
 .DS_Store
+.idea
 terraform.tfstate*
 .terraform*
 # mod_*

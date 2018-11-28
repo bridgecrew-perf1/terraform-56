@@ -84,27 +84,22 @@ variable "name" {
   default     = ""
 }
 
-variable "tagpro" {
+variable "tag_project" {
   description = "The name of the project this resource belongs to"
   default     = ""
 }
 
-variable "tagenv" {
+variable "tag_env" {
   description = "The environemnt this resource is being deployed to"
   default     = ""
 }
 
-variable "tagapp" {
+variable "tag_costcenter" {
   description = "The cost center"
   default     = ""
 }
 
-variable "tagown" {
-  description = "The Owner of the resource"
-  default     = ""
-}
-
-variable "tagmod" {
+variable "tag_createdby" {
   description = "Who created this resource"
   default     = ""
 }

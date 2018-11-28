@@ -2,22 +2,18 @@ output "vpc_id" {
   value = "${aws_vpc.main.id}"
 }
 
-output "subnet_public_id" {
+output "public_subnet_ids" {
   value = ["${aws_subnet.public.*.id}"]
 }
 
-output "subnet_private_id" {
+output "private_subnet_ids" {
   value = ["${aws_subnet.private.*.id}"]
 }
 
-output "subnet_rds_id" {
-  value = ["${aws_subnet.rds.*.id}"]
+output "db_subnet_ids" {
+  value = ["${aws_subnet.db.*.id}"]
 }
 
-output "subnet_ecs_id" {
-  value = ["${aws_subnet.ecs.*.id}"]
-}
-
-output "subnet_rs_id" {
-  value = ["${aws_subnet.rs.*.id}"]
+output "app_subnet_ids" {
+  value = ["${aws_subnet.app.*.id}"]
 }
