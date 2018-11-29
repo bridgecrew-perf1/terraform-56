@@ -3,13 +3,13 @@ terraform {
 }
 
 resource "aws_iam_instance_profile" "main" {
-  name                        = "${var.name}.ec2_role"
+  name                        = "${var.name}_iam_role"
   path                        = "${var.iam_policy_path}" 
   role                        = "${aws_iam_role.main.name}"
 }
 
 resource "aws_iam_role" "main" {
-  description                 = "${var.name} IAM ec2 Role"
+  description                 = "${var.name} IAM Role"
   name                        = "${var.name}.iam_role"
   path                        = "${var.iam_policy_path}"
   assume_role_policy          = "${var.assume_role_policy}"

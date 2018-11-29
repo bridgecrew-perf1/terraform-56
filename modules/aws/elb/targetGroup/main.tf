@@ -8,6 +8,7 @@ resource "aws_lb_target_group" "mod" {
   protocol = "${var.protocol}"
   vpc_id = "${var.vpc_id}"
   deregistration_delay = "${var.deregistration_delay}"
+  proxy_protocol_v2 = "${var.proxy_protocol_v2}"
   stickiness {
     type = "${var.stickiness_type}"
     cookie_duration = "${var.stickiness_cookie_duration}"
@@ -30,7 +31,7 @@ resource "aws_lb_target_group" "mod" {
     Environment                = "${var.tag_env}"
     awsCostCenter              = "${var.tag_costcenter}"
     CreatedBy                  = "${var.tag_createdby}"
-    ALB                        = "${var.tag_alb}"
+    Alb                        = "${var.tag_alb}"
   }
 }
 

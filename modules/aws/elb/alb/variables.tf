@@ -5,12 +5,12 @@ variable "name" {
 
 variable "internal" {
   description = "Boolean, set the type of ip for the LB"
-  default = ""
+  default = "false"
 }
 
 variable "load_balancer_type" {
   description = "Set the App lb type, can be application or network"
-  default = ""
+  default = "application"
 }
 
 variable "security_groups" {
@@ -27,7 +27,7 @@ variable "subnets" {
 
 variable "enable_deletion_protection" {
   description = "Boolean, useful if you have multiple targets - avoids wide spread impact if deleted"
-  default = ""
+  default = "false"
 }
 
 variable "log_bucket" {

@@ -36,24 +36,20 @@ variable "igr_security_groups" {
 }
 
 variable "egr_from" {
-  description = ""
-  default = ""
+  default = 0
 }
 
 variable "egr_to" {
-  description = ""
-  default = ""
+  default = 0
 }
 
 variable "egr_protocol" {
-  description = ""
-  default = ""
+  default = "-1"
 }
 
 variable "egr_cidr_blocks" {
-  description = ""
   type = "list"
-  default = []
+  default = ["0.0.0.0/0"]
 }
 
 variable "egr_security_groups" {
