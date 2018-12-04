@@ -4,7 +4,7 @@ variable "key_name" {
   default = ""
 }
 
-variable "key_pair" {
+variable "public_key" {
   description = "Create the AWS key pair to use on the initial setup WIP: to script key replacement from vault"
   default = ""
 }

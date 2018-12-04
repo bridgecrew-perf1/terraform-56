@@ -1,11 +1,11 @@
-output "iam_role_arn" {
+output "arn" {
   value = "${aws_iam_instance_profile.main.arn}"
 }
 
-output "iam_role_unique_id" {
+output "unique_id" {
   value = "${aws_iam_instance_profile.main.unique_id}"
 }
 
-output "iam_role_name" {
+output "name" {
   value = "${aws_iam_instance_profile.main.name}"
 }

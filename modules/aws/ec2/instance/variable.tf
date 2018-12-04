@@ -9,7 +9,7 @@ variable "iam_instance_profile" {}
 variable "availability_zone" {}
 
 variable "ebs_optimized" {
-  defautl = false
+  default = false
 }
 
 variable "disable_api_termination" {

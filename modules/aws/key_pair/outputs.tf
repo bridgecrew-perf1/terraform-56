@@ -1,4 +1,4 @@
-output "key_name" {
+output "name" {
   value = "${aws_key_pair.main.key_name}"
 }
 

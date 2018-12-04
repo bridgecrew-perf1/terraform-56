@@ -11,11 +11,11 @@ output "availability_zone" {
 }
 
 output "key_name" {
-  value = "${aws_instance.main.}"
+  value = "${aws_instance.main.key_name}"
 }
 
 output "public_dns" {
-  value = "${aws_instance.main.key_name}"
+  value = "${aws_instance.main.public_dns}"
 }
 
 output "public_ip" {
