@@ -241,6 +241,64 @@ resource "aws_route_table_association" "private" {
   route_table_id               = "${element(aws_route_table.private.*.id, count.index)}"
 }
 
+// Application networks
+
+resource "aws_route_table" "app" {
+  count                        = "${length(var.private_subnets) > 0 ? length(var.app_subnets) : 0}"
+  vpc_id                       = "${aws_vpc.main.id}"
+  tags {
+    Name                       = "${var.name}.rtapp.${count.index}"
+    Project                    = "${var.tag_project}"
+    Environment                = "${var.tag_env}"
+    awsCostCenter              = "${var.tag_costcenter}"
+    CreatedBy                  = "${var.tag_createdby}"
+  }
+}
+
+/*
+App Subnets
+*/
+resource "aws_subnet" "app" {
+  count                        = "${length(var.app_subnets) > 0 ? length(var.app_subnets) : 0}"
+  vpc_id                       = "${aws_vpc.main.id}"
+  cidr_block                   = "${element(var.app_subnets, count.index)}"
+  availability_zone            = "${element(var.azs, count.index)}"
+  tags {
+    Name                       = "${var.name}.appsub.${count.index}"
+    Project                    = "${var.tag_project}"
+    Environment                = "${var.tag_env}"
+    awsCostCenter              = "${var.tag_costcenter}"
+    CreatedBy                  = "${var.tag_createdby}"
+  }
+}
+
+
+resource "aws_route" "app_nat_gateway" {
+  count                        = "${length(var.app_subnets) > 0 ? length(var.app_subnets) : 0}"
+  route_table_id               = "${element(aws_route_table.private.*.id, count.index)}"
+  destination_cidr_block       = "0.0.0.0/0"
+  nat_gateway_id               = "${aws_nat_gateway.main.id}"
+}
+
+/*
+Private Route Association
+*/
+resource "aws_route_table_association" "app" {
+  count                        = "${length(var.app_subnets)}"
+  subnet_id                    = "${element(aws_subnet.app.*.id, count.index)}"
+  route_table_id               = "${element(aws_route_table.app.*.id, count.index)}"
+}
+
+
+
+
+
+
+
+
+
+
+
 /*
 db network
 */
@@ -261,7 +319,7 @@ resource "aws_route_table" "db" {
 }
 
 /*
-db Subnets
+DB Subnets
 */
 resource "aws_subnet" "db" {
   count                        = "${length(var.db_subnets) > 0 ? length(var.db_subnets) : 0}"
@@ -278,7 +336,7 @@ resource "aws_subnet" "db" {
 }
 
 /*
-db Route Association
+DB Route Association
 */
 resource "aws_route_table_association" "db" {
   count                        = "${length(var.db_subnets)}"
