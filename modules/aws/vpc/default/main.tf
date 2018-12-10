@@ -24,7 +24,7 @@ VPC flow logs
 */
 
 resource "aws_flow_log" "main" {
-  log_group_name = "${aws_cloudwatch_log_group.main.name}"
+  log_destination = "${aws_cloudwatch_log_group.main.name}"
   iam_role_arn   = "${aws_iam_role.main.arn}"
   vpc_id         = "${aws_vpc.main.id}"
   traffic_type   = "ALL"

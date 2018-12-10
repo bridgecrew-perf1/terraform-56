@@ -24,7 +24,7 @@ VPC flow logs
 */
 
 resource "aws_flow_log" "main" {
-  log_group_name = "${aws_cloudwatch_log_group.main.name}"
+  log_destination = "${aws_cloudwatch_log_group.main.arn}"
   iam_role_arn   = "${aws_iam_role.main.arn}"
   vpc_id         = "${aws_vpc.main.id}"
   traffic_type   = "ALL"
@@ -53,6 +53,13 @@ resource "aws_iam_role" "main" {
   ]
 }
 EOF
+  tags {
+    Name                       = "${var.name}"
+    Project                    = "${var.tag_project}"
+    Environment                = "${var.tag_env}"
+    awsCostCenter              = "${var.tag_costcenter}"
+    CreatedBy                  = "${var.tag_createdby}"
+  }
 }
 
 resource "aws_iam_role_policy" "main" {
@@ -100,7 +107,7 @@ resource "aws_vpc_dhcp_options" "main" {
 DHCP Options Set Association
 */
 resource "aws_vpc_dhcp_options_association" "main" {
-  count                         = "${var.enable_dhcp ? 1 : 0}"
+//  count                         = "${var.enable_dhcp ? 1 : 0}"
   vpc_id                        = "${aws_vpc.main.id}"
   dhcp_options_id               = "${aws_vpc_dhcp_options.main.id}"
 }
@@ -244,7 +251,7 @@ resource "aws_route_table_association" "private" {
 // Application networks
 
 resource "aws_route_table" "app" {
-  count                        = "${length(var.private_subnets) > 0 ? length(var.app_subnets) : 0}"
+  count                        = "${length(var.app_subnets) > 0 ? length(var.app_subnets) : 0}"
   vpc_id                       = "${aws_vpc.main.id}"
   tags {
     Name                       = "${var.name}.rtapp.${count.index}"
@@ -275,7 +282,7 @@ resource "aws_subnet" "app" {
 
 resource "aws_route" "app_nat_gateway" {
   count                        = "${length(var.app_subnets) > 0 ? length(var.app_subnets) : 0}"
-  route_table_id               = "${element(aws_route_table.private.*.id, count.index)}"
+  route_table_id               = "${element(aws_route_table.app.*.id, count.index)}"
   destination_cidr_block       = "0.0.0.0/0"
   nat_gateway_id               = "${aws_nat_gateway.main.id}"
 }

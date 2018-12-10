@@ -5,17 +5,17 @@ variable "cidr" {
 
 variable "vpc_tenancy" {
   description = "Instance type of tenancy, accepted values are default/dedicated"
-  default     = ""
+  default     = "default"
 }
 
 variable "enable_dns_support" {
   description = "Use if you are setting internal DNS's, default is false"
-  default     = ""
+  default     = true
 }
 
 variable "enable_dns_hostnames" {
   description = "What is the list of DNS servers"
-  default     = ""
+  default     = true
 }
 
 variable dhcp_domain_name {
@@ -32,7 +32,7 @@ variable "map_ip" {
 variable domain_name_servers {
   description = "Search list of the IP's or FQDN of your DNS servers (WIP)"
   type = "list"
-  default = []
+  default = ["AmazonProvidedDNS"]
 }
 /*
 variable dns_ntp_servers {
@@ -43,7 +43,7 @@ variable dns_ntp_servers {
 
 variable enable_dhcp {
   description = "Set to true/false if you want to use this resource"
-  default = ""
+  default = true
 }
 
 variable azs {
