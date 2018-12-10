@@ -61,6 +61,11 @@ variable private_subnets {
   default = []
 }
 
+variable app_subnets {
+  description = "Ranges for the VPC Private db subnets"
+  default = []
+}
+
 variable db_subnets {
   description = "Ranges for the VPC Private db subnets"
   default = []

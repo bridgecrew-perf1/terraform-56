@@ -284,7 +284,7 @@ resource "aws_route" "app_nat_gateway" {
 Private Route Association
 */
 resource "aws_route_table_association" "app" {
-  count                        = "${length(var.app_subnets)}"
+  count                        = "${length(var.app_subnets) > 0 ? length(var.app_subnets) : 0}"
   subnet_id                    = "${element(aws_subnet.app.*.id, count.index)}"
   route_table_id               = "${element(aws_route_table.app.*.id, count.index)}"
 }
