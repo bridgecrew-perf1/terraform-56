@@ -20,6 +20,66 @@ resource "aws_vpc" "main" {
 }
 
 /*
+VPC flow logs
+*/
+
+resource "aws_flow_log" "main" {
+  log_group_name = "${aws_cloudwatch_log_group.main.name}"
+  iam_role_arn   = "${aws_iam_role.main.arn}"
+  vpc_id         = "${aws_vpc.main.id}"
+  traffic_type   = "ALL"
+}
+
+resource "aws_cloudwatch_log_group" "main" {
+  name = "/awsvpc/${var.name}"
+}
+
+
+resource "aws_iam_role" "main" {
+  name = "${var.name}-vpc-logs-role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "sts",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "vpc-flow-logs.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "main" {
+  name = "${var.name}-vpc-logs-policy"
+  role = "${aws_iam_role.main.id}"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents",
+        "logs:DescribeLogGroups",
+        "logs:DescribeLogStreams"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
+/*
 DHCP options Set
 */
 resource "aws_vpc_dhcp_options" "main" {
@@ -182,17 +242,17 @@ resource "aws_route_table_association" "private" {
 }
 
 /*
-RDS network
+db network
 */
 
 /*
-rds routes
+DB routes
 */
-resource "aws_route_table" "rds" {
-  count                        = "${length(var.rds_subnets) > 0 ? length(var.rds_subnets) : 0}"
+resource "aws_route_table" "db" {
+  count                        = "${length(var.db_subnets) > 0 ? length(var.db_subnets) : 0}"
   vpc_id                       = "${aws_vpc.main.id}"
   tags {
-    Name                       = "${var.name}.rtrds.${count.index}"
+    Name                       = "${var.name}.rtdb.${count.index}"
     Project                    = "${var.tag_project}"
     Environment                = "${var.tag_env}"
     awsCostCenter              = "${var.tag_costcenter}"
@@ -201,15 +261,15 @@ resource "aws_route_table" "rds" {
 }
 
 /*
-rds Subnets
+db Subnets
 */
-resource "aws_subnet" "rds" {
-  count                        = "${length(var.rds_subnets) > 0 ? length(var.rds_subnets) : 0}"
+resource "aws_subnet" "db" {
+  count                        = "${length(var.db_subnets) > 0 ? length(var.db_subnets) : 0}"
   vpc_id                       = "${aws_vpc.main.id}"
-  cidr_block                   = "${element(var.rds_subnets, count.index)}"
+  cidr_block                   = "${element(var.db_subnets, count.index)}"
   availability_zone            = "${element(var.azs, count.index)}"
   tags {
-    Name                       = "${var.name}.rdssub.${count.index}"
+    Name                       = "${var.name}.dbsub.${count.index}"
     Project                    = "${var.tag_project}"
     Environment                = "${var.tag_env}"
     awsCostCenter              = "${var.tag_costcenter}"
@@ -218,12 +278,12 @@ resource "aws_subnet" "rds" {
 }
 
 /*
-rds Route Association
+db Route Association
 */
-resource "aws_route_table_association" "rds" {
-  count                        = "${length(var.rds_subnets)}"
-  subnet_id                    = "${element(aws_subnet.rds.*.id, count.index)}"
-  route_table_id               = "${element(aws_route_table.rds.*.id, count.index)}"
+resource "aws_route_table_association" "db" {
+  count                        = "${length(var.db_subnets)}"
+  subnet_id                    = "${element(aws_subnet.db.*.id, count.index)}"
+  route_table_id               = "${element(aws_route_table.db.*.id, count.index)}"
 }
 
 /*

@@ -11,5 +11,5 @@ output "subnet_private_id" {
 }
 
 output "subnet_rds_id" {
-  value = ["${aws_subnet.rds.*.id}"]
+  value = ["${aws_subnet.db.*.id}"]
 }
