@@ -12,9 +12,10 @@ resource "aws_instance" "main" {
   disable_api_termination       = "${var.disable_api_termination}"
   key_name                      = "${var.key_name}"
   monitoring                    = "${var.monitoring}"
-  security_groups               = ["${var.security_groups}"]
+  vpc_security_group_ids        = ["${var.vpc_security_group_ids }"]
   source_dest_check             = "${var.source_dest_check}"
   user_data                     = "${var.user_data}"
+  subnet_id                     = "${var.subnet_id}"
   root_block_device {
     volume_type                 = "${var.volume_type}"
     volume_size                 = "${var.volume_size}"

@@ -23,7 +23,7 @@ variable "monitoring" {
   default = false
 }
 
-variable "security_groups" {
+variable "vpc_security_group_ids" {
   type = "list"
 }
 
@@ -31,6 +31,8 @@ variable "source_dest_check" {
   description = "Bollean, default to true, set to false if the instance is a VPN; Proxy or NatGW instance"
   default = true
 }
+
+variable "subnet_id" {}
 
 variable "user_data" {}
 
