@@ -314,3 +314,47 @@ resource "aws_route_table_association" "app" {
   route_table_id               = "${element(aws_route_table.app.*.id, count.index)}"
 }
 
+/*
+Redshift network
+*/
+
+/*
+redshift routes
+*/
+resource "aws_route_table" "rs" {
+  count                        = "${length(var.rs_subnets) > 0 ? length(var.rs_subnets) : 0}"
+  vpc_id                       = "${aws_vpc.main.id}"
+  tags {
+    Name                       = "${var.name}.rtrs.${count.index}"
+    Project                    = "${var.tag_project}"
+    Environment                = "${var.tag_env}"
+    awsCostCenter              = "${var.tag_costcenter}"
+    CreatedBy                  = "${var.tag_createdby}"
+  }
+}
+
+/*
+rs Subnets
+*/
+resource "aws_subnet" "rs" {
+  count                        = "${length(var.rs_subnets) > 0 ? length(var.rs_subnets) : 0}"
+  vpc_id                       = "${aws_vpc.main.id}"
+  cidr_block                   = "${element(var.rs_subnets, count.index)}"
+  availability_zone            = "${element(var.azs, count.index)}"
+  tags {
+    Name                       = "${var.name}.rssub.${count.index}"
+    Project                    = "${var.tag_project}"
+    Environment                = "${var.tag_env}"
+    awsCostCenter              = "${var.tag_costcenter}"
+    CreatedBy                  = "${var.tag_createdby}"
+  }
+}
+
+/*
+rs Route Association
+*/
+resource "aws_route_table_association" "rs" {
+  count                        = "${length(var.rs_subnets)}"
+  subnet_id                    = "${element(aws_subnet.rs.*.id, count.index)}"
+  route_table_id               = "${element(aws_route_table.rs.*.id, count.index)}"
+}
