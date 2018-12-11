@@ -10,11 +10,11 @@ output "subnet_private_id" {
   value = ["${aws_subnet.private.*.id}"]
 }
 
-output "subnet_rds_id" {
+output "subnet_db_id" {
   value = ["${aws_subnet.db.*.id}"]
 }
 
-output "subnet_ecs_id" {
+output "subnet_app_id" {
   value = ["${aws_subnet.app.*.id}"]
 }
 
@@ -26,11 +26,11 @@ output "route_table_private" {
   value = ["${aws_route_table.private.*.id}"]
 }
 
-output "route_table_rds" {
+output "route_table_db" {
   value = ["${aws_route_table.db.*.id}"]
 }
 
-output "route_table_ecs" {
+output "route_table_app" {
   value = ["${aws_route_table.app.*.id}"]
 }
 
