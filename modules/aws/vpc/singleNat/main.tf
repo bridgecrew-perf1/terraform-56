@@ -184,7 +184,7 @@ resource "aws_route_table" "private" {
   count                        = "${length(var.private_subnets) > 0 ? length(var.private_subnets) : 0}"
   vpc_id                       = "${aws_vpc.main.id}"
   tags {
-    Name                       = "${var.name}.pub.rt.${count.index}"
+    Name                       = "${var.name}.pri.rt.${count.index}"
     Project                    = "${var.tag_project}"
     Environment                = "${var.tag_env}"
     awsCostCenter              = "${var.tag_costcenter}"
