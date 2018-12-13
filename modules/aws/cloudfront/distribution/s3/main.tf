@@ -64,5 +64,4 @@ resource "aws_cloudfront_distribution" "main" {
     awsCostCenter              = "${var.tag_costcenter}"
     CreatedBy                  = "${var.tag_createdby}"
   }
-  }
 }
