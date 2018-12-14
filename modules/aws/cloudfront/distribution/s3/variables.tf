@@ -133,6 +133,22 @@ variable "retain_on_delete" {
   default = false
 }
 
+// s3
+variable "name" {
+  description = "The name of the Bucket"
+  default = ""
+}
+
+variable "acl" {
+  description = "The acl for the bucket"
+  default = "private"
+}
+
+variable "destroy" {
+  description = "The policy for retention of the bucket, default false"
+  default = "false"
+}
+
 /*
 Tags
 */

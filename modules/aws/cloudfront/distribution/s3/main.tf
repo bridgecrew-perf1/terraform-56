@@ -65,3 +65,36 @@ resource "aws_cloudfront_distribution" "main" {
     CreatedBy                  = "${var.tag_createdby}"
   }
 }
+
+resource "aws_s3_bucket" "main" {
+  bucket = "${var.name}"
+  acl    = "${var.acl}"
+  force_destroy = "${var.destroy}"
+  tags {
+    Name                       = "${var.name}"
+    Project                    = "${var.tag_project}"
+    Environment                = "${var.tag_env}"
+    awsCostCenter              = "${var.tag_costcenter}"
+    CreatedBy                  = "${var.tag_createdby}"
+  }
+}
+
+
+resource "aws_s3_bucket_policy" "main" {
+  bucket = "${aws_s3_bucket.main.id}"
+
+  policy = <<POLICY
+{
+   "Version":"2012-10-17",
+   "Statement":[
+     {
+       "Sid":" Grant a CloudFront Origin Identity access to support private content",
+       "Effect":"Allow",
+       "Principal":{"CanonicalUser":"${aws_cloudfront_distribution.main.oai_s3_canonical_user_id}"},
+       "Action":"s3:GetObject",
+       "Resource":"arn:aws:s3:::examplebucket/*"
+     }
+   ]
+}
+POLICY
+}
