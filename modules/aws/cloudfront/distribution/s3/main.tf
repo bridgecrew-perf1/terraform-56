@@ -22,7 +22,7 @@ resource "aws_cloudfront_distribution" "main" {
         forward                     = "${var.default_forward_cookies}"
       }
     }
-    viewer_protocol_policy          = "${var.default_forward_viewer_protocol_policy}"
+//    viewer_protocol_policy          = "${var.default_forward_viewer_protocol_policy}"
     min_ttl                         = "${var.default_forward_min_ttl}"
     default_ttl                     = "${var.default_forward_default_ttl}"
     max_ttl                         = "${var.default_forward_max_ttl}"
@@ -31,11 +31,11 @@ resource "aws_cloudfront_distribution" "main" {
   enabled                           = "${var.enabled}"
   is_ipv6_enabled                   = "${var.is_ipv6_enabled}"
   http_version                      = "${var.http_version}"
-  logging_config {
-    include_cookies                 = "${var.log_include_cookies}"
-    bucket                          = "${var.log_bucket}"
-    prefix                          = "${var.log_prefix}"
-  }
+//  logging_config {
+//    include_cookies                 = "${var.log_include_cookies}"
+//    bucket                          = "${var.log_bucket}"
+//    prefix                          = "${var.log_prefix}"
+//  }
   origin {
     domain_name                     = "${var.origin_domain_name}"
     origin_id                       = "s3-${var.name}-cft-target-origin-id"
@@ -50,12 +50,12 @@ resource "aws_cloudfront_distribution" "main" {
       # locations                     = ["${var.geo_locations}"]
     }
   }
-  viewer_certificate {
-    acm_certificate_arn             = "${var.acm_certificate_arn}"
-    minimum_protocol_version        = "${var.minimum_protocol_version}"
-    ssl_support_method              = "${var.ssl_support_method}"
-  }
-  web_acl_id                        = "${var.web_acl_id}"
+//  viewer_certificate {
+//    acm_certificate_arn             = "${var.acm_certificate_arn}"
+//    minimum_protocol_version        = "${var.minimum_protocol_version}"
+//    ssl_support_method              = "${var.ssl_support_method}"
+//  }
+//  web_acl_id                        = "${var.web_acl_id}"
   retain_on_delete                  = "${var.retain_on_delete}"
   tags {
     Name                       = "${var.name}"
@@ -82,19 +82,19 @@ resource "aws_s3_bucket" "main" {
 
 resource "aws_s3_bucket_policy" "main" {
   bucket = "${aws_s3_bucket.main.id}"
-
   policy = <<POLICY
 {
    "Version":"2012-10-17",
+   "Id":"PolicyForCloudFrontPrivateContent",
    "Statement":[
      {
        "Sid":" Grant a CloudFront Origin Identity access to support private content",
        "Effect":"Allow",
-       "Principal":{"CanonicalUser":"${aws_cloudfront_distribution.main.oai_s3_canonical_user_id}"},
+       "Principal":{"CanonicalUser":"CloudFront Origin Identity ${aws_cloudfront_distribution.main.id}"},
        "Action":"s3:GetObject",
-       "Resource":"arn:aws:s3:::examplebucket/*"
+       "Resource":"${aws_s3_bucket.main.arn}/*"
      }
    ]
-}
 POLICY
 }
+

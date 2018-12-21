@@ -134,10 +134,6 @@ variable "retain_on_delete" {
 }
 
 // s3
-variable "name" {
-  description = "The name of the Bucket"
-  default = ""
-}
 
 variable "acl" {
   description = "The acl for the bucket"
@@ -152,10 +148,6 @@ variable "destroy" {
 /*
 Tags
 */
-variable "name" {
-  description = "Input the name of stack"
-  default     = ""
-}
 
 variable "tag_project" {
   description = "The name of the project this resource belongs to"
