@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "main" {
-  bucket = "${var.fqdn}"
+  bucket = "${var.name}"
   acl    = "${var.acl}"
   logging {
     target_bucket = "${var.target_bucket}"
@@ -15,5 +15,12 @@ resource "aws_s3_bucket" "main" {
     index_document = "${var.index_document}"
     error_document = "${var.error_document}"
   }
-  force_destroy = "${var.force_destroy}"
+  force_destroy = "${var.destroy}"
+  tags {
+    Name                       = "${var.name}"
+    Project                    = "${var.tag_project}"
+    Environment                = "${var.tag_env}"
+    awsCostCenter              = "${var.tag_costcenter}"
+    CreatedBy                  = "${var.tag_createdby}"
+  }
 }

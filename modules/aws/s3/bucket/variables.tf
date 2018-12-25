@@ -1,8 +1,3 @@
-variable "name" {
-  description = "The name of the Bucket"
-  default = ""
-}
-
 variable "acl" {
   description = "The acl for the bucket"
   default = "private"

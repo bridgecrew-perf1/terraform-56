@@ -4,6 +4,9 @@ resource "cloudflare_page_rule" "main" {
   priority = "${var.priority}"
   status = "${var.status}"
   actions = {
-    forwarding_url = "${var.forwarding_url}"
+    forwarding_url {
+      url = "${var.forwarding_url}"
+      status_code = "${var.forwarding_status_code}"
+    }
   }
 }

@@ -1,19 +1,15 @@
-variable "cloudflare_zone" {
-  default = ""
-}
+variable "cloudflare_zone" {}
 
-variable "target" {
-  default = ""
-}
+variable "target" {}
 
-variable "priority" {
-  default = ""
-}
+variable "priority" {}
 
 variable "status" {
-  default = "enable"
+  default = "active"
 }
 
-variable "forwarding_url" {
-  default = ""
-}
+variable "forwarding_url" {}
+
+variable "forwarding_status_code" {}
+
+
