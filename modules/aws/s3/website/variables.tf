@@ -1,7 +1,7 @@
 variable "fqdn" {}
 
 variable "acl" {
-  default = "public-read"
+  default = "private"
 }
 
 variable "target_bucket" {}
