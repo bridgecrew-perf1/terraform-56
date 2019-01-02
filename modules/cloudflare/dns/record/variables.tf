@@ -17,3 +17,7 @@ variable "type" {
 variable "ttl" {
   default = ""
 }
+
+variable "proxied" {
+  default = true
+}

@@ -5,4 +5,5 @@ resource "cloudflare_record" "main" {
   value  = "${var.value}"
   type   = "${var.type}"
   ttl    = "${var.ttl}"
+  proxied = "${var.proxied}"
 }
