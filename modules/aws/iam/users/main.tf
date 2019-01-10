@@ -4,11 +4,12 @@ terraform {
 }
 
 resource "aws_iam_user" "main" {
-  name = "${var.name}"
+  count = "${length(var.users) > 0 ? length(var.users) : 0}"
+  name = "${element(var.users, count.index)}"
   force_destroy = "${var.force_destroy}"
   path = "${var.path}"
   tags = {
-    Name                       = "${var.name}"
+    Name                       = "${element(var.users, count.index)}"
     Project                    = "${var.tag_project}"
     Environment                = "${var.tag_env}"
     awsCostCenter              = "${var.tag_costcenter}"

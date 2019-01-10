@@ -1,4 +1,6 @@
-variable "name" {}
+variable "users" {
+  type = "list"
+}
 
 variable "force_destroy" {
   default = false

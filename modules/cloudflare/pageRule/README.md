@@ -4,7 +4,7 @@ For these examples the values of the variables are stored on **hlc** files.
 
 ### Forwarding 301 rule:
 
-```
+```hcl-terraform
 module "cf301_www_http" {
   source = "<LOCAL_PATH>"
   cloudflare_zone = "${var.cloudflare_zone}"
@@ -17,7 +17,7 @@ module "cf301_www_http" {
 
 ### SSL rule:
 
-```
+```hcl-terraform
 module "cfSsl" {
   source = "<LOCAL_PATH>"
   cloudflare_zone = "${var.cloudflare_zone}"
