@@ -2,7 +2,7 @@
 
 This module allows you to choose the nr of subnets and 
 
-####Example with only Public Subnets
+#### Example with only Public Subnets
 ```hcl-terraform
 provider "aws" {
   region                          = ""
@@ -46,7 +46,6 @@ module "root<NAME>" {
 *data.tf*
 ```hcl-terraform
 data "aws_caller_identity" "current" {
-  provider = "aws.current"
 }
 ```
 *main.tf*
@@ -59,7 +58,6 @@ module "vpc_main" {
   name                                = "${var.vpc_name}"
   cidr                                = "${var.cidr}"
   dhcp_domain_name                    = "${var.dhcp_domain_name}"
-  domain_name_servers                 = ["AmazonProvidedDNS"]
   # dhcp_dns_ntp_servers                = ""
   azs                                 = ["${var.region}a", "${var.region}b", "${var.region}c"]
   public_subnets                      = ["${var.public_subnets}"]
@@ -76,6 +74,7 @@ module "vpc_main" {
 ```
 
 The above examples assume you are using hlc files like this:
+
 *backend.hlc*
 ```hcl-terraform
 bucket = ""
