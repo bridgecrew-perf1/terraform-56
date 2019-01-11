@@ -1,5 +1,5 @@
 Example of a environment specific stack
-```
+```hcl-terraform
 provider "aws" {
   region                          = ""
   version                         = "~> 1.37"
@@ -42,7 +42,7 @@ module "root<NAME>" {
 
 
 Example of a base stack
-```
+```hcl-terraform
 module "vpc_main" {
   source = "<YOUR_REPO_PATH_AND_VERSION>"
   # source = "<LOCAL_PATH_FOR_DEV>"
@@ -62,10 +62,10 @@ module "vpc_main" {
   app_subnets                         = ["${var.app_subnets}"]
   # eip                                 = ["${var.eip}"]
   map_ip                              = true
-  tagpro                              = "${var.tagpro}"
-  tagapp                              = "${var.vpc_name}"
-  tagenv                              = "${var.env}"
-  tagown                              = "${var.tagown}"
-  tagmod                              = "${data.aws_caller_identity.main.arn}"
+  tag_name                            = "${var.name}
+  tag_project                         = "${var.tag_project}"
+  tag_env                             = "${var.name}"
+  tag_costcenter                      = "${var.env}"
+  tag_createdby                       = "${data.aws_caller_identity.main.arn}"
 }
 ```

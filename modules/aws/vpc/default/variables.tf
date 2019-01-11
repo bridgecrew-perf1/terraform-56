@@ -20,7 +20,7 @@ variable "enable_dns_hostnames" {
 
 variable dhcp_domain_name {
   description = "The domain name for instances in this VPC"
-  default = ""
+  default = "demo.local"
 }
 
 variable "map_ip" {
@@ -99,7 +99,12 @@ variable "tag_costcenter" {
   default     = ""
 }
 
-variable "tag_createdby" {
-  description = "Who created this resource"
+variable "tag_lastmodifyby" {
+  description = "user"
+  default     = ""
+}
+
+variable "tag_lastmodifydate" {
+  description = "date"
   default     = ""
 }

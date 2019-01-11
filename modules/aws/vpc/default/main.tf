@@ -15,7 +15,8 @@ resource "aws_vpc" "main" {
     Project                     = "${var.tag_project}"
     Environment                 = "${var.tag_env}"
     awsCostCenter               = "${var.tag_costcenter}"
-    CreatedBy                   = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
 }
 
@@ -92,7 +93,8 @@ resource "aws_vpc_dhcp_options" "main" {
     Project                     = "${var.tag_project}"
     Environment                 = "${var.tag_env}"
     awsCostCenter               = "${var.tag_costcenter}"
-    CreatedBy                   = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
 }
 
@@ -112,11 +114,12 @@ resource "aws_internet_gateway" "main" {
   count                         = "${length(var.public_subnets) > 0 ? 1 : 0}"
   vpc_id                        = "${aws_vpc.main.id}"
   tags {
-    Name                        = "${var.name}-igw"
+    Name                        = "${var.name}"
     Project                     = "${var.tag_project}"
     Environment                 = "${var.tag_env}"
     awsCostCenter               = "${var.tag_costcenter}"
-    CreatedBy                   = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
 }
 
@@ -128,11 +131,12 @@ resource "aws_route_table" "public" {
   vpc_id                        = "${aws_vpc.main.id}"
   # propagating_vgws           = ["${var.public_propagating_vgws}"]
   tags {
-    Name                        = "${var.name}.pub.rt.${count.index}"
+    Name                        = "${var.name}"
     Project                     = "${var.tag_project}"
     Environment                 = "${var.tag_env}"
     awsCostCenter               = "${var.tag_costcenter}"
-    CreatedBy                   = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
 }
 
@@ -153,11 +157,12 @@ resource "aws_subnet" "public" {
   availability_zone             = "${element(var.azs, count.index)}"
   map_public_ip_on_launch       = "${var.map_ip}"
   tags {
-    Name                        = "${var.name}.pub.sub.${count.index}"
+    Name                        = "${var.name}"
     Project                     = "${var.tag_project}"
     Environment                 = "${var.tag_env}"
     awsCostCenter               = "${var.tag_costcenter}"
-    CreatedBy                   = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
 }
 
@@ -177,11 +182,12 @@ resource "aws_route_table" "private" {
   count                        = "${length(var.private_subnets) > 0 ? length(var.private_subnets) : 0}"
   vpc_id                       = "${aws_vpc.main.id}"
   tags {
-    Name                       = "${var.name}.pri.rt.${count.index}"
+    Name                        = "${var.name}"
     Project                     = "${var.tag_project}"
     Environment                 = "${var.tag_env}"
     awsCostCenter               = "${var.tag_costcenter}"
-    CreatedBy                   = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
 }
 
@@ -194,11 +200,12 @@ resource "aws_subnet" "private" {
   cidr_block                   = "${element(var.private_subnets, count.index)}"
   availability_zone            = "${element(var.azs, count.index)}"
   tags {
-    Name                       = "${var.name}.priv.sub.${count.index}"
+    Name                        = "${var.name}"
     Project                     = "${var.tag_project}"
     Environment                 = "${var.tag_env}"
     awsCostCenter               = "${var.tag_costcenter}"
-    CreatedBy                   = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
 }
 
@@ -222,7 +229,8 @@ resource "aws_nat_gateway" "main" {
     Project                     = "${var.tag_project}"
     Environment                 = "${var.tag_env}"
     awsCostCenter               = "${var.tag_costcenter}"
-    CreatedBy                   = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
   depends_on                   = ["aws_internet_gateway.main"]
 }
@@ -255,7 +263,8 @@ resource "aws_route_table" "db" {
     Project                     = "${var.tag_project}"
     Environment                 = "${var.tag_env}"
     awsCostCenter               = "${var.tag_costcenter}"
-    CreatedBy                   = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
 }
 
@@ -269,7 +278,8 @@ resource "aws_subnet" "db" {
     Project                     = "${var.tag_project}"
     Environment                 = "${var.tag_env}"
     awsCostCenter               = "${var.tag_costcenter}"
-    CreatedBy                   = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
 }
 
@@ -290,7 +300,8 @@ resource "aws_route_table" "app" {
     Project                     = "${var.tag_project}"
     Environment                 = "${var.tag_env}"
     awsCostCenter               = "${var.tag_costcenter}"
-    CreatedBy                   = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
 }
 
@@ -304,7 +315,8 @@ resource "aws_subnet" "app" {
     Project                     = "${var.tag_project}"
     Environment                 = "${var.tag_env}"
     awsCostCenter               = "${var.tag_costcenter}"
-    CreatedBy                   = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
 }
 
@@ -329,7 +341,8 @@ resource "aws_route_table" "rs" {
     Project                    = "${var.tag_project}"
     Environment                = "${var.tag_env}"
     awsCostCenter              = "${var.tag_costcenter}"
-    CreatedBy                  = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
 }
 
@@ -346,7 +359,8 @@ resource "aws_subnet" "rs" {
     Project                    = "${var.tag_project}"
     Environment                = "${var.tag_env}"
     awsCostCenter              = "${var.tag_costcenter}"
-    CreatedBy                  = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
 }
 
