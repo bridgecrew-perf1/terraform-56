@@ -11,7 +11,14 @@ resource "aws_iam_group_membership" "main" {
 }
 
 resource "aws_iam_group_policy" "main" {
+  count = "${length(var.users) > 0 ? : 0}"
   name  = "${var.name}_group_policy"
   group = "${aws_iam_group.main.id}"
   policy = "${var.policy}"
+}
+
+resource "aws_iam_group_policy_attachment" "main" {
+  count = "${length(var.users) > 0 ? length(var.users) : 0}"
+  group      = "${aws_iam_group.main.id}"
+  policy_arn = "${aws_iam_policy.policy.arn}"
 }

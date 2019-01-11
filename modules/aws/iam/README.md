@@ -1,9 +1,14 @@
-# IAM module to add multiple users
+# IAM modules
 
-Although andy this module has a challenge how you manage removing/adding users, use only for demo advised.
 
 Example for single user:
-Use the sed_caller_identity data source.
+Use the aws_caller_identity data source.
+```hcl-terraform
+data "aws_caller_identity" "current" {
+  provider = "aws.current"
+}
+```
+The module itself:
 ```hcl-terraform
 module "user" {
   source = "git::https://github.com/boldlink/terraform.git//modules//aws/iam/user/"
@@ -14,9 +19,9 @@ module "user" {
   tag_project = "${var.project}"
 }
 ```
+Although andy this module has a challenge how you manage removing/adding users, use only for demo advised.
 
-Example with multiple users:
-Use the sed_caller_identity data source.
+Use the aws_caller_identity data source.
 ```hcl-terraform
 module "users" {
 
