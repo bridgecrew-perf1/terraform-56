@@ -25,14 +25,14 @@ VPC flow logs
 */
 
 resource "aws_flow_log" "main" {
-  log_destination = "${aws_cloudwatch_log_group.main.name}"
+  log_destination = "${aws_cloudwatch_log_group.main.arn}"
   iam_role_arn   = "${aws_iam_role.main.arn}"
   vpc_id         = "${aws_vpc.main.id}"
   traffic_type   = "ALL"
 }
 
 resource "aws_cloudwatch_log_group" "main" {
-  name = "/awsvpc/${var.name}"
+  name = "/aws/vpc/${var.name}"
 }
 
 
@@ -73,7 +73,7 @@ resource "aws_iam_role_policy" "main" {
         "logs:DescribeLogStreams"
       ],
       "Effect": "Allow",
-      "Resource": "*"
+      "Resource": "arn:aws:logs:${var.region}:${var.account}:log-group:/aws/vpc/${var.name}:*"
     }
   ]
 }
@@ -151,13 +151,13 @@ resource "aws_route" "public_internet_gateway" {
 Public Subnets
 */
 resource "aws_subnet" "public" {
-  count                         = "${length(var.public_subnets) > 0 ? length(var.private_subnets) : 0}"
+  count                         = "${length(var.public_subnets) > 0 ? length(var.public_subnets) : 0}"
   vpc_id                        = "${aws_vpc.main.id}"
   cidr_block                    = "${element(var.public_subnets, count.index)}"
   availability_zone             = "${element(var.azs, count.index)}"
   map_public_ip_on_launch       = "${var.map_ip}"
   tags {
-    Name                        = "${var.name}"
+    Name                        = "${var.name}.pub.${count.index}"
     Project                     = "${var.tag_project}"
     Environment                 = "${var.tag_env}"
     awsCostCenter               = "${var.tag_costcenter}"
@@ -173,6 +173,7 @@ resource "aws_route_table_association" "public" {
   count                        = "${length(var.public_subnets)}"
   subnet_id                    = "${element(aws_subnet.public.*.id, count.index)}"
   route_table_id               = "${aws_route_table.public.id}"
+  depends_on = ["aws_subnet.public"]
 }
 
 /*
@@ -182,7 +183,7 @@ resource "aws_route_table" "private" {
   count                        = "${length(var.private_subnets) > 0 ? length(var.private_subnets) : 0}"
   vpc_id                       = "${aws_vpc.main.id}"
   tags {
-    Name                        = "${var.name}"
+    Name                        = "${var.name}.pri.${count.index}"
     Project                     = "${var.tag_project}"
     Environment                 = "${var.tag_env}"
     awsCostCenter               = "${var.tag_costcenter}"
@@ -200,7 +201,7 @@ resource "aws_subnet" "private" {
   cidr_block                   = "${element(var.private_subnets, count.index)}"
   availability_zone            = "${element(var.azs, count.index)}"
   tags {
-    Name                        = "${var.name}"
+    Name                        = "${var.name}.pri.${count.index}"
     Project                     = "${var.tag_project}"
     Environment                 = "${var.tag_env}"
     awsCostCenter               = "${var.tag_costcenter}"
@@ -225,7 +226,7 @@ resource "aws_nat_gateway" "main" {
   allocation_id                = "${element(aws_eip.nat.*.id, count.index)}"
   subnet_id                    = "${element(aws_subnet.public.*.id, count.index)}"
   tags {
-    Name                        = "${var.name}"
+    Name                        = "${var.name}.natGw.${count.index}"
     Project                     = "${var.tag_project}"
     Environment                 = "${var.tag_env}"
     awsCostCenter               = "${var.tag_costcenter}"
@@ -259,7 +260,7 @@ resource "aws_route_table" "db" {
   count                        = "${length(var.rds_subnets) > 0 ? length(var.rds_subnets) : 0}"
   vpc_id                       = "${aws_vpc.main.id}"
   tags {
-    Name                       = "${var.name}.db.rt.${count.index}"
+    Name                       = "${var.name}.db.${count.index}"
     Project                     = "${var.tag_project}"
     Environment                 = "${var.tag_env}"
     awsCostCenter               = "${var.tag_costcenter}"
@@ -274,7 +275,7 @@ resource "aws_subnet" "db" {
   cidr_block                   = "${element(var.rds_subnets, count.index)}"
   availability_zone            = "${element(var.azs, count.index)}"
   tags {
-    Name                       = "${var.name}.db.sub.${count.index}"
+    Name                       = "${var.name}.db.${count.index}"
     Project                     = "${var.tag_project}"
     Environment                 = "${var.tag_env}"
     awsCostCenter               = "${var.tag_costcenter}"
@@ -293,10 +294,10 @@ resource "aws_route_table_association" "db" {
 App's network
 */
 resource "aws_route_table" "app" {
-  count                        = "${length(var.ecs_subnets) > 0 ? length(var.ecs_subnets) : 0}"
+  count                        = "${length(var.app_subnets) > 0 ? length(var.app_subnets) : 0}"
   vpc_id                       = "${aws_vpc.main.id}"
   tags {
-    Name                       = "${var.name}.app.rt.${count.index}"
+    Name                       = "${var.name}.app.${count.index}"
     Project                     = "${var.tag_project}"
     Environment                 = "${var.tag_env}"
     awsCostCenter               = "${var.tag_costcenter}"
@@ -306,12 +307,12 @@ resource "aws_route_table" "app" {
 }
 
 resource "aws_subnet" "app" {
-  count                        = "${length(var.ecs_subnets) > 0 ? length(var.ecs_subnets) : 0}"
+  count                        = "${length(var.app_subnets) > 0 ? length(var.app_subnets) : 0}"
   vpc_id                       = "${aws_vpc.main.id}"
-  cidr_block                   = "${element(var.ecs_subnets, count.index)}"
+  cidr_block                   = "${element(var.app_subnets, count.index)}"
   availability_zone            = "${element(var.azs, count.index)}"
   tags {
-    Name                       = "${var.name}.app.sub.${count.index}"
+    Name                       = "${var.name}.app.${count.index}"
     Project                     = "${var.tag_project}"
     Environment                 = "${var.tag_env}"
     awsCostCenter               = "${var.tag_costcenter}"
@@ -321,7 +322,7 @@ resource "aws_subnet" "app" {
 }
 
 resource "aws_route_table_association" "app" {
-  count                        = "${length(var.ecs_subnets)}"
+  count                        = "${length(var.app_subnets)}"
   subnet_id                    = "${element(aws_subnet.app.*.id, count.index)}"
   route_table_id               = "${element(aws_route_table.app.*.id, count.index)}"
 }
@@ -337,7 +338,7 @@ resource "aws_route_table" "rs" {
   count                        = "${length(var.rs_subnets) > 0 ? length(var.rs_subnets) : 0}"
   vpc_id                       = "${aws_vpc.main.id}"
   tags {
-    Name                       = "${var.name}.rs.rt.${count.index}"
+    Name                       = "${var.name}.rs.${count.index}"
     Project                    = "${var.tag_project}"
     Environment                = "${var.tag_env}"
     awsCostCenter              = "${var.tag_costcenter}"
@@ -355,7 +356,7 @@ resource "aws_subnet" "rs" {
   cidr_block                   = "${element(var.rs_subnets, count.index)}"
   availability_zone            = "${element(var.azs, count.index)}"
   tags {
-    Name                       = "${var.name}.rs.sub.${count.index}"
+    Name                       = "${var.name}.rs.${count.index}"
     Project                    = "${var.tag_project}"
     Environment                = "${var.tag_env}"
     awsCostCenter              = "${var.tag_costcenter}"

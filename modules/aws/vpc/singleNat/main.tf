@@ -15,7 +15,8 @@ resource "aws_vpc" "main" {
     Project                    = "${var.tag_project}"
     Environment                = "${var.tag_env}"
     awsCostCenter              = "${var.tag_costcenter}"
-    CreatedBy                  = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
 }
 
@@ -58,7 +59,8 @@ EOF
     Project                    = "${var.tag_project}"
     Environment                = "${var.tag_env}"
     awsCostCenter              = "${var.tag_costcenter}"
-    CreatedBy                  = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
 }
 
@@ -79,7 +81,7 @@ resource "aws_iam_role_policy" "main" {
         "logs:DescribeLogStreams"
       ],
       "Effect": "Allow",
-      "Resource": "*"
+      "Resource": "arn:aws:logs:${var.region}:${var.account}:log-group:/aws/vpc/${var.name}:*"
     }
   ]
 }
@@ -99,7 +101,8 @@ resource "aws_vpc_dhcp_options" "main" {
     Project                    = "${var.tag_project}"
     Environment                = "${var.tag_env}"
     awsCostCenter              = "${var.tag_costcenter}"
-    CreatedBy                  = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
 }
 
@@ -123,7 +126,8 @@ resource "aws_internet_gateway" "main" {
     Project                    = "${var.tag_project}"
     Environment                = "${var.tag_env}"
     awsCostCenter              = "${var.tag_costcenter}"
-    CreatedBy                  = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
 }
 
@@ -135,11 +139,12 @@ resource "aws_route_table" "public" {
   vpc_id                        = "${aws_vpc.main.id}"
   # propagating_vgws           = ["${var.public_propagating_vgws}"]
   tags {
-    Name                       = "${var.name}.pub.rt.${count.index}"
+    Name                       = "${var.name}.pub.${count.index}"
     Project                    = "${var.tag_project}"
     Environment                = "${var.tag_env}"
     awsCostCenter              = "${var.tag_costcenter}"
-    CreatedBy                  = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
 }
 
@@ -160,11 +165,12 @@ resource "aws_subnet" "public" {
   availability_zone             = "${element(var.azs, count.index)}"
   map_public_ip_on_launch       = "${var.map_ip}"
   tags {
-    Name                       = "${var.name}.pub.sub.${count.index}"
+    Name                       = "${var.name}.pub.${count.index}"
     Project                    = "${var.tag_project}"
     Environment                = "${var.tag_env}"
     awsCostCenter              = "${var.tag_costcenter}"
-    CreatedBy                  = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
 }
 
@@ -184,11 +190,12 @@ resource "aws_route_table" "private" {
   count                        = "${length(var.private_subnets) > 0 ? length(var.private_subnets) : 0}"
   vpc_id                       = "${aws_vpc.main.id}"
   tags {
-    Name                       = "${var.name}.pri.rt.${count.index}"
+    Name                       = "${var.name}.pri.${count.index}"
     Project                    = "${var.tag_project}"
     Environment                = "${var.tag_env}"
     awsCostCenter              = "${var.tag_costcenter}"
-    CreatedBy                  = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
 }
 
@@ -201,11 +208,12 @@ resource "aws_subnet" "private" {
   cidr_block                   = "${element(var.private_subnets, count.index)}"
   availability_zone            = "${element(var.azs, count.index)}"
   tags {
-    Name                       = "${var.name}.pri.sub.${count.index}"
+    Name                       = "${var.name}.pri.${count.index}"
     Project                    = "${var.tag_project}"
     Environment                = "${var.tag_env}"
     awsCostCenter              = "${var.tag_costcenter}"
-    CreatedBy                  = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
 }
 
@@ -227,9 +235,9 @@ resource "aws_nat_gateway" "main" {
     Project                    = "${var.tag_project}"
     Environment                = "${var.tag_env}"
     awsCostCenter              = "${var.tag_costcenter}"
-    CreatedBy                  = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
-  depends_on                   = ["aws_internet_gateway.main"]
 }
 
 resource "aws_route" "private_nat_gateway" {
@@ -254,11 +262,12 @@ resource "aws_route_table" "app" {
   count                        = "${length(var.app_subnets) > 0 ? length(var.app_subnets) : 0}"
   vpc_id                       = "${aws_vpc.main.id}"
   tags {
-    Name                       = "${var.name}.app.rt.${count.index}"
+    Name                       = "${var.name}.app.${count.index}"
     Project                    = "${var.tag_project}"
     Environment                = "${var.tag_env}"
     awsCostCenter              = "${var.tag_costcenter}"
-    CreatedBy                  = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
 }
 
@@ -271,11 +280,12 @@ resource "aws_subnet" "app" {
   cidr_block                   = "${element(var.app_subnets, count.index)}"
   availability_zone            = "${element(var.azs, count.index)}"
   tags {
-    Name                       = "${var.name}.app.sub.${count.index}"
+    Name                       = "${var.name}.app.${count.index}"
     Project                    = "${var.tag_project}"
     Environment                = "${var.tag_env}"
     awsCostCenter              = "${var.tag_costcenter}"
-    CreatedBy                  = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
 }
 
@@ -307,11 +317,12 @@ resource "aws_route_table" "db" {
   count                        = "${length(var.db_subnets) > 0 ? length(var.db_subnets) : 0}"
   vpc_id                       = "${aws_vpc.main.id}"
   tags {
-    Name                       = "${var.name}.db.rt.${count.index}"
+    Name                       = "${var.name}.db.${count.index}"
     Project                    = "${var.tag_project}"
     Environment                = "${var.tag_env}"
     awsCostCenter              = "${var.tag_costcenter}"
-    CreatedBy                  = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
 }
 
@@ -324,11 +335,12 @@ resource "aws_subnet" "db" {
   cidr_block                   = "${element(var.db_subnets, count.index)}"
   availability_zone            = "${element(var.azs, count.index)}"
   tags {
-    Name                       = "${var.name}.db.sub.${count.index}"
+    Name                       = "${var.name}.db.${count.index}"
     Project                    = "${var.tag_project}"
     Environment                = "${var.tag_env}"
     awsCostCenter              = "${var.tag_costcenter}"
-    CreatedBy                  = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
 }
 
@@ -352,11 +364,12 @@ resource "aws_route_table" "rs" {
   count                        = "${length(var.rs_subnets) > 0 ? length(var.rs_subnets) : 0}"
   vpc_id                       = "${aws_vpc.main.id}"
   tags {
-    Name                       = "${var.name}.rs.rt.${count.index}"
+    Name                       = "${var.name}.rs.${count.index}"
     Project                    = "${var.tag_project}"
     Environment                = "${var.tag_env}"
     awsCostCenter              = "${var.tag_costcenter}"
-    CreatedBy                  = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
 }
 
@@ -369,11 +382,12 @@ resource "aws_subnet" "rs" {
   cidr_block                   = "${element(var.rs_subnets, count.index)}"
   availability_zone            = "${element(var.azs, count.index)}"
   tags {
-    Name                       = "${var.name}.rs.sub.${count.index}"
+    Name                       = "${var.name}.rs.${count.index}"
     Project                    = "${var.tag_project}"
     Environment                = "${var.tag_env}"
     awsCostCenter              = "${var.tag_costcenter}"
-    CreatedBy                  = "${var.tag_createdby}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
   }
 }
 

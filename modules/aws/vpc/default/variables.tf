@@ -1,3 +1,7 @@
+variable "region" {}
+
+variable "account" {}
+
 variable "cidr" {
   description = "VPC address block"
   default     = ""
@@ -66,8 +70,8 @@ variable rds_subnets {
   default = []
 }
 
-variable ecs_subnets {
-  description = "Ranges for the VPC Private ECS subnets"
+variable app_subnets {
+  description = "Ranges for the VPC Private APPs subnets"
   default = []
 }
 

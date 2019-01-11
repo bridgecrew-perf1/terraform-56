@@ -1,3 +1,7 @@
+variable "account" {}
+
+variable "region" {}
+
 variable "cidr" {
   description = "VPC address block"
   default     = ""
@@ -99,7 +103,12 @@ variable "tag_costcenter" {
   default     = ""
 }
 
-variable "tag_createdby" {
-  description = "Who created this resource"
+variable "tag_lastmodifyby" {
+  description = "user"
+  default     = ""
+}
+
+variable "tag_lastmodifydate" {
+  description = "date"
   default     = ""
 }

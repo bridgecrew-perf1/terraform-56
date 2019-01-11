@@ -1,4 +1,8 @@
-Example of a environment specific stack
+# VPC module
+
+This module allows you to choose the nr of subnets and 
+
+####Example with only Public Subnets
 ```hcl-terraform
 provider "aws" {
   region                          = ""
@@ -22,50 +26,80 @@ terraform {
 module "root<NAME>" {
   source = "git::https://github.com/terraform//modules//aws//vpc//default?ref=<VERSION>"
   # source = "<LOCAL_PATH_FOR_DEV>"
-  env                             = ""
-  account                         = ""
-  region                          = ""
-  tagpro                          = ""
-  tagown                          = ""
-  vpc_name                        = ""
-  cidr                            = "10.1.0.0/16"
-  dhcp_domain_name                = ""
-  azs                             = []
-  public_subnets                  = ["10.1.1.0/24", "10.1.2.0/24", "10.1.3.0/24"]
-  private_subnets                 = ["10.1.110.0/24", "10.1.120.0/24", "10.1.130.0/24"]
-  app_subnets                     = []
-  rs_subnets                      = []
-  rds_subnets                     = []
-  # eip                             = []
+  name                                = "${var.vpc_name}"
+  cidr                                = "${var.cidr}"
+  dhcp_domain_name                    = "${var.dhcp_domain_name}"
+  domain_name_servers                 = ["AmazonProvidedDNS"]
+  # dhcp_dns_ntp_servers                = ""
+  azs                                 = ["${var.region}a", "${var.region}b", "${var.region}c"]
+  public_subnets                      = ["${var.public_subnets}"]
+  # eip                                 = ["${var.eip}"] # only for fixed NATGW EIPs
+  map_ip                              = true
+  tag_project                         = "${var.tag_project}"
+  tag_env                             = "${var.env}"
+  tag_lastmodifyby                    = "${data.aws_caller_identity.current.arn}"
+  tag_lastmodifydate                  = "${data.aws_caller_identity.current.id}"
 }
 ```
+#### Example of a full stack:
 
-
-Example of a base stack
+*data.tf*
+```hcl-terraform
+data "aws_caller_identity" "current" {
+  provider = "aws.current"
+}
+```
+*main.tf*
 ```hcl-terraform
 module "vpc_main" {
   source = "<YOUR_REPO_PATH_AND_VERSION>"
   # source = "<LOCAL_PATH_FOR_DEV>"
+  region                              = "${var.region}"
+  account                             = "${var.account}"
   name                                = "${var.vpc_name}"
   cidr                                = "${var.cidr}"
-  vpc_tenancy                         = "default"
-  enable_dns_support                  = true
-  enable_dns_hostnames                = true
   dhcp_domain_name                    = "${var.dhcp_domain_name}"
   domain_name_servers                 = ["AmazonProvidedDNS"]
   # dhcp_dns_ntp_servers                = ""
-  enable_dhcp                         = true
-  azs                                 = ["${var.azs}"]
+  azs                                 = ["${var.region}a", "${var.region}b", "${var.region}c"]
   public_subnets                      = ["${var.public_subnets}"]
   private_subnets                     = ["${var.private_subnets}"]
   rds_subnets                         = ["${var.rds_subnets}"]
   app_subnets                         = ["${var.app_subnets}"]
-  # eip                                 = ["${var.eip}"]
+  # eip                                 = ["${var.eip}"] # only for fixed NATGW EIPs
   map_ip                              = true
-  tag_name                            = "${var.name}
   tag_project                         = "${var.tag_project}"
-  tag_env                             = "${var.name}"
-  tag_costcenter                      = "${var.env}"
-  tag_createdby                       = "${data.aws_caller_identity.main.arn}"
+  tag_env                             = "${var.env}"
+  tag_lastmodifyby                    = "${data.aws_caller_identity.current.arn}"
+  tag_lastmodifydate                  = "${data.aws_caller_identity.current.id}"
 }
 ```
+
+The above examples assume you are using hlc files like this:
+*backend.hlc*
+```hcl-terraform
+bucket = ""
+key = ""
+region = ""
+dynamodb_table = ""
+role_arn = "" # Use if the state is on a different account.
+```
+*environment.hlc*
+```hcl-terraform
+region = "us-west-1"
+account = ""
+role_arn = ""
+name = ""
+cidr = "10.10.0.0/16"
+dhcp_domain_name = "demo.local"
+public_subnets = ["10.10.1.0/24","10.10.2.0/24","10.10.3.0/24"]
+private_subnets = ["10.10.11.0/24","10.10.12.0/24","10.10.13.0/24"]
+rds_subnets = ["10.10.21.0/24","10.10.22.0/24","10.10.23.0/24"]
+app_subnets = ["10.10.31.0/24","10.10.32.0/24","10.10.33.0/24"]
+rs_subnets = ["10.10.41.0/24","10.10.42.0/24","10.10.43.0/24"]
+env = ""
+tag_project = ""
+tag_costcenter = ""
+```
+
+For a VPC with a single NatGW use the code on the corresponding folder, this module should be used on Dev environments.
