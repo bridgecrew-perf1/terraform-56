@@ -131,7 +131,7 @@ resource "aws_route_table" "public" {
   vpc_id                        = "${aws_vpc.main.id}"
   # propagating_vgws           = ["${var.public_propagating_vgws}"]
   tags {
-    Name                        = "${var.name}"
+    Name                        = "${var.name}.pub"
     Project                     = "${var.tag_project}"
     Environment                 = "${var.tag_env}"
     awsCostCenter               = "${var.tag_costcenter}"
@@ -257,7 +257,7 @@ resource "aws_route_table_association" "private" {
 DB's Network
 */
 resource "aws_route_table" "db" {
-  count                        = "${length(var.rds_subnets) > 0 ? length(var.rds_subnets) : 0}"
+  count                        = "${length(var.db_subnets) > 0 ? length(var.db_subnets) : 0}"
   vpc_id                       = "${aws_vpc.main.id}"
   tags {
     Name                       = "${var.name}.db.${count.index}"
@@ -270,9 +270,9 @@ resource "aws_route_table" "db" {
 }
 
 resource "aws_subnet" "db" {
-  count                        = "${length(var.rds_subnets) > 0 ? length(var.rds_subnets) : 0}"
+  count                        = "${length(var.db_subnets) > 0 ? length(var.db_subnets) : 0}"
   vpc_id                       = "${aws_vpc.main.id}"
-  cidr_block                   = "${element(var.rds_subnets, count.index)}"
+  cidr_block                   = "${element(var.db_subnets, count.index)}"
   availability_zone            = "${element(var.azs, count.index)}"
   tags {
     Name                       = "${var.name}.db.${count.index}"
@@ -285,7 +285,7 @@ resource "aws_subnet" "db" {
 }
 
 resource "aws_route_table_association" "db" {
-  count                        = "${length(var.rds_subnets)}"
+  count                        = "${length(var.db_subnets)}"
   subnet_id                    = "${element(aws_subnet.db.*.id, count.index)}"
   route_table_id               = "${element(aws_route_table.db.*.id, count.index)}"
 }
@@ -325,6 +325,13 @@ resource "aws_route_table_association" "app" {
   count                        = "${length(var.app_subnets)}"
   subnet_id                    = "${element(aws_subnet.app.*.id, count.index)}"
   route_table_id               = "${element(aws_route_table.app.*.id, count.index)}"
+}
+
+resource "aws_route" "app_nat_gateway" {
+  count                        = "${length(var.app_subnets) > 0 ? length(var.app_subnets) : 0}"
+  route_table_id               = "${element(aws_route_table.app.*.id, count.index)}"
+  destination_cidr_block       = "0.0.0.0/0"
+  nat_gateway_id               = "${element(aws_nat_gateway.main.*.id, count.index)}"
 }
 
 /*

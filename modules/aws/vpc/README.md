@@ -15,12 +15,7 @@ provider "aws" {
 }
 
 terraform {
-  backend "s3" {
-    bucket                        = ""
-    key                           = ""
-    region                        = ""
-    dynamodb_table                = ""
-  }
+  backend "s3" {}
 }
 
 module "root<NAME>" {
@@ -62,7 +57,7 @@ module "vpc_main" {
   azs                                 = ["${var.region}a", "${var.region}b", "${var.region}c"]
   public_subnets                      = ["${var.public_subnets}"]
   private_subnets                     = ["${var.private_subnets}"]
-  rds_subnets                         = ["${var.rds_subnets}"]
+  db_subnets                         = ["${var.rds_subnets}"]
   app_subnets                         = ["${var.app_subnets}"]
   # eip                                 = ["${var.eip}"] # only for fixed NATGW EIPs
   map_ip                              = true
@@ -93,7 +88,7 @@ cidr = "10.10.0.0/16"
 dhcp_domain_name = "demo.local"
 public_subnets = ["10.10.1.0/24","10.10.2.0/24","10.10.3.0/24"]
 private_subnets = ["10.10.11.0/24","10.10.12.0/24","10.10.13.0/24"]
-rds_subnets = ["10.10.21.0/24","10.10.22.0/24","10.10.23.0/24"]
+db_subnets = ["10.10.21.0/24","10.10.22.0/24","10.10.23.0/24"]
 app_subnets = ["10.10.31.0/24","10.10.32.0/24","10.10.33.0/24"]
 rs_subnets = ["10.10.41.0/24","10.10.42.0/24","10.10.43.0/24"]
 env = ""
