@@ -1,6 +1,6 @@
 # VPC module
 
-This module allows you to choose the nr of subnets and 
+This module allows you to choose the nr of subnets and you have the choice of a full HA vpc ready for production or a single nat vpc ideal for your dev environments.
 
 #### Example with only Public Subnets
 ```hcl-terraform
