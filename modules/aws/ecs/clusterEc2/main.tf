@@ -16,7 +16,7 @@ resource "aws_cloudwatch_log_group" "main" {
 
 resource "aws_ecs_cluster" "main" {
   name = "${var.name}.${var.instance_type}"
-  tags {
+  tags = {
     Name                       = "${var.name}.${var.instance_type}"
     Project                    = "${var.tag_project}"
     Environment                = "${var.env}"
@@ -114,6 +114,36 @@ resource "aws_iam_role_policy_attachment" "main" {
     policy_arn                = "${aws_iam_policy.main.arn}"
 }
 
+// Security Group
+resource "aws_security_group" "main" {
+  name                        = "${var.name}"
+  description                 = "${var.name}.${var.instance_type} ECS Cluster ssh SG"
+  vpc_id                      = "${var.vpc_id}"
+
+  ingress {
+    from_port                 = "${var.igr_from}"
+    to_port                   = "${var.igr_to}"
+    protocol                  = "${var.igr_protocol}"
+    cidr_blocks               = ["${var.igr_cidr_blocks}"]
+    security_groups           = ["${var.igr_security_groups}"]
+  }
+  egress {
+    from_port                 = 0
+    to_port                   = 0
+    protocol                  = "-1"
+    cidr_blocks               = ["0.0.0.0/0"]
+    security_groups           = ["${var.egr_security_groups}"]
+  }
+  tags {
+    Name                       = "${var.name}.${var.instance_type}"
+    Project                    = "${var.tag_project}"
+    Environment                = "${var.env}"
+    awsCostCenter              = "${var.tag_costcenter}"
+    ModifiedBy                 = "${var.tag_modifiedby}"
+    ModifyDate                 = "${var.tag_modifydate}"
+  }
+}
+
 // Launch Template
 resource "aws_launch_template" "main" {
   name = "${var.name}.${var.instance_type}"
@@ -164,5 +194,5 @@ resource "aws_launch_template" "main" {
     ModifiedBy                 = "${var.tag_modifiedby}"
     ModifyDate                 = "${var.tag_modifydate}"
     }
-  user_data = "${base64encode(...)}"
+  user_data = ""
 }

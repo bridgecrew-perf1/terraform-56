@@ -75,6 +75,38 @@ variable "rsa_bits" {
   default = "4096"
 }
 
+// Security Group
+
+variable "vpc_id" {
+  default = ""
+}
+
+variable "igr_from" {
+  default = "22"
+}
+
+variable "igr_to" {
+  default = "22"
+}
+
+variable "igr_protocol" {
+  default = "tcp"
+}
+
+variable "igr_cidr_blocks" {
+  type = "list"
+  default = ["0.0.0./0"]
+}
+
+variable "igr_security_groups" {
+  type = "list"
+  default = []
+}
+
+variable "egr_security_groups" {
+  type = "list"
+  default = []
+}
 // Launch Template
 
 variable "instance_type" {
