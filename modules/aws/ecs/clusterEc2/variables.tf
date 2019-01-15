@@ -231,16 +231,16 @@ variable "target_value_mem" {
   default = 60
 }
 
-variable "notifications" {
-  default = [
-    "autoscaling:EC2_INSTANCE_LAUNCH",
-    "autoscaling:EC2_INSTANCE_LAUNCH_ERROR",
-    "autoscaling:EC2_INSTANCE_TERMINATE",
-    "autoscaling:EC2_INSTANCE_TERMINATE_ERROR"
-  ]
-}
-
-variable "topic_arn" {}
+//variable "notifications" {
+//  default = [
+//    "autoscaling:EC2_INSTANCE_LAUNCH",
+//    "autoscaling:EC2_INSTANCE_LAUNCH_ERROR",
+//    "autoscaling:EC2_INSTANCE_TERMINATE",
+//    "autoscaling:EC2_INSTANCE_TERMINATE_ERROR"
+//  ]
+//}
+//
+//variable "topic_arn" {}
 
 /*
 Tags
