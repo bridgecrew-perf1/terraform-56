@@ -6,7 +6,7 @@ output "ecs_arn" {
   value = "${aws_ecs_cluster.main.arn}"
 }
 
-output "name" {
+output "key_name" {
   value = "${aws_key_pair.main.key_name}"
 }
 
@@ -18,7 +18,7 @@ output "id" {
   value = "${aws_autoscaling_group.main.id}"
 }
 
-output "name" {
+output "as_name" {
   value = "${aws_autoscaling_group.main.name}"
 }
 

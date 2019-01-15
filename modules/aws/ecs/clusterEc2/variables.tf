@@ -3,10 +3,21 @@
 Auto Scaling variable definition
 */
 
+variable "ami_owner" {
+  default = "amazon"
+}
+
+variable "ami_name" {
+  default = "amzn2-ami-ecs-hvm-2.0*"
+}
+
+variable "ami_architecture" {
+  default = "arm64"
+}
+
 variable "vpc_zone_identifier" {
   description = "A list of subnet IDs for the ec2 instances"
   type = "list"
-  default = []
 }
 
 variable "max_size" {
@@ -95,7 +106,7 @@ variable "igr_protocol" {
 
 variable "igr_cidr_blocks" {
   type = "list"
-  default = ["0.0.0./0"]
+  default = ["0.0.0.0/0"]
 }
 
 variable "igr_security_groups" {
@@ -177,13 +188,64 @@ variable "delete_on_termination" {
   default = true
 }
 
-variable "vpc_security_group_ids" {
+variable "security_group" {
   type = "list"
 }
+
+// Autoscaling variables and values
+
+variable "policy_type" {
+  default = "TargetTrackingScaling"
+}
+variable "estimated_instance_warmup" {
+  default = "120"
+}
+variable "metric_dimension_name" {
+  default = "ClusterName"
+}
+variable "metric_dimension_metric_name_cpu" {
+  default = "CpuReservation"
+}
+
+variable "metric_dimension_metric_name_mem" {
+  default = "MemoryReservation"
+}
+
+variable "metric_dimension_namespace" {
+  default = "AWS/ECS"
+}
+
+variable "metric_dimension_statistic_cpu" {
+  default = "Average"
+}
+
+variable "metric_dimension_statistic_mem" {
+  default = "Average"
+}
+
+variable "target_value_cpu" {
+  default = 75
+}
+
+variable "target_value_mem" {
+  default = 60
+}
+
+variable "notifications" {
+  default = [
+    "autoscaling:EC2_INSTANCE_LAUNCH",
+    "autoscaling:EC2_INSTANCE_LAUNCH_ERROR",
+    "autoscaling:EC2_INSTANCE_TERMINATE",
+    "autoscaling:EC2_INSTANCE_TERMINATE_ERROR"
+  ]
+}
+
+variable "topic_arn" {}
 
 /*
 Tags
 */
+
 variable "name" {
   description = "The name of the ECS cluster"
   default = ""
@@ -205,11 +267,11 @@ variable "tag_costcenter" {
 }
 
 variable "tag_modifiedby" {
-  description = "The Owner of the resource"
+  description = "The User who modifed the resource by terraform apply"
   default     = ""
 }
 
 variable "tag_modifydate" {
-  description = "Who created this resource"
+  description = "The date the resource was last modified by terraform apply"
   default     = ""
 }
