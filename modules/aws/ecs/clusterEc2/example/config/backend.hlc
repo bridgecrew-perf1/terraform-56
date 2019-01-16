@@ -1,0 +1,5 @@
+bucket = "<BUCKET_NAME>"
+key = "state/<ENV>/clusters/ecs/<CLUSTER_NAME>.tfstate"
+region = "<STATE_REGION>"
+dynamodb_table = "<DDB_TABLE>"
+role_arn = "<ROLE_ARN_IF_STATE_IS_IN_A_DIFFERENT_ACCOUNT>"

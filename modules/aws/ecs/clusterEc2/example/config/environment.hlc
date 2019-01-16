@@ -1,0 +1,20 @@
+region = "<REGION_OF_THE_STACK>"
+# This example assumes you are using multiple accounts.
+role_arn = "<THE_ROLE_TO_ASSUME>"
+name = "<STACK_NAME>"
+instance_type = "a1.medium"
+min_size = 0
+max_size = 30
+desired_capacity = 1
+tag_costcenter = ""
+tag_project = ""
+tag_modifiedby = "${data.aws_caller_identity.current.arn}"
+tag_modifydate = "${data.aws_caller_identity.current.id}"
+env = ""
+account = ""
+# Use one or multiple subnet ID's here, use a data source or remote state.
+vpc_zone_identifier = ["<SUBNET_ID_1>", "<SUBNET_ID_2>", "<SUBNET_ID_3>"]
+security_group = [""]
+# Optional resource, enable with any value to build or leave it blank to skip.
+autoscaling_enabled = ""
+sns_enabled = ""
