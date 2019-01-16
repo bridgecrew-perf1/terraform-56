@@ -119,3 +119,11 @@ EOC
 EOF
 
 }
+
+data "template_file" "dashboard" {
+   vars {
+    cluster_name             = "${aws_autoscaling_group.main.name}"
+  }
+  template                  = "${file("${path.module}/dashboard.json")}"
+
+}

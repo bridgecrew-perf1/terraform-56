@@ -230,17 +230,15 @@ variable "target_value_cpu" {
 variable "target_value_mem" {
   default = 60
 }
-
-//variable "notifications" {
-//  default = [
-//    "autoscaling:EC2_INSTANCE_LAUNCH",
-//    "autoscaling:EC2_INSTANCE_LAUNCH_ERROR",
-//    "autoscaling:EC2_INSTANCE_TERMINATE",
-//    "autoscaling:EC2_INSTANCE_TERMINATE_ERROR"
-//  ]
-//}
-//
-//variable "topic_arn" {}
+// Alarms
+variable "sns_notifications" {
+  default = [
+    "autoscaling:EC2_INSTANCE_LAUNCH",
+    "autoscaling:EC2_INSTANCE_LAUNCH_ERROR",
+    "autoscaling:EC2_INSTANCE_TERMINATE",
+    "autoscaling:EC2_INSTANCE_TERMINATE_ERROR"
+  ]
+}
 
 /*
 Tags
@@ -275,3 +273,7 @@ variable "tag_modifydate" {
   description = "The date the resource was last modified by terraform apply"
   default     = ""
 }
+
+variable "autoscaling_enabled" {}
+
+variable "sns_enabled" {}
