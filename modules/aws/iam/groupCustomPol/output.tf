@@ -19,13 +19,13 @@ output "aws_iam_group_unique_id" {
 }
 
 output "aws_iam_group_membership_name" {
-  value = "${aws_iam_group_membership.main.name}"
+  value = "${aws_iam_group_membership.main.*.name}"
 }
 
 output "aws_iam_group_membership_users" {
-  value = ["${aws_iam_group_membership.main.users}"]
+  value = ["${aws_iam_group_membership.main.*.users}"]
 }
 
 output "aws_iam_group_membership_group" {
-  value = "${aws_iam_group_membership.main.group}"
+  value = "${aws_iam_group_membership.main.*.group}"
 }

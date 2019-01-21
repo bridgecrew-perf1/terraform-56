@@ -27,7 +27,7 @@ resource "aws_launch_configuration" "main" {
 }
 
 /*
-Auto Scaling group configuration
+Auto Scaling groupCustomPol configuration
 */
 
 resource "aws_autoscaling_group" "main" {

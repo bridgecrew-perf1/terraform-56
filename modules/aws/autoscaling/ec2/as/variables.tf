@@ -88,7 +88,7 @@ variable "termination_policies" {
 # }
 
 # variable "placement_group" {
-#   description = "The name of the placement group, instances cannot be spanned across multiple AZs"
+#   description = "The name of the placement groupCustomPol, instances cannot be spanned across multiple AZs"
 #   default = ""
 # }
 
