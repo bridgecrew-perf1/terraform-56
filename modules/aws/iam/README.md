@@ -33,3 +33,27 @@ module "users" {
   tag_project = "${var.project}"
 }
 ```
+
+### Group modules:
+The group modules are split into two very similar modules, the main difference is a Terraform limitation, you cannot attach a policy and use policy attachment to attach another managed policy to the group with terraform, thus the separate modules.
+
+##### Example for managed policy
+```hcl-terraform
+module "group" {
+  source = "../terraform/modules/aws/iam/groupManagedPol/"
+  group_users = ["${var.Users}"]
+  name = "${var.name}"
+  path = "/groups/${var.env}/${var.project}/"
+  policy_arn = "${var.policy_arn}"
+}
+```
+##### Example for custom managed policy
+```hcl-terraform
+module "group" {
+  source = "../terraform/modules/aws/iam/groupCustomPol/"
+  group_users = ["${var.users}"]
+  policy = "${data.aws_iam_policy_document.DevTeam2.json}"
+  name = "${var.ame}"
+  path = "/groups/${var.env}/${var.project}/"
+}
+```
