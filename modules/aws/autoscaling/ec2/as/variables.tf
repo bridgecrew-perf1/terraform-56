@@ -46,7 +46,7 @@ variable "desired_capacity" {
 
 
 # variable "health_check_grace_period" {
-#   description = "Time after instance comes into service before checking health OK/KO."
+#   description = "Time after clusterInstance comes into service before checking health OK/KO."
 #   default = "300"
 # }
 

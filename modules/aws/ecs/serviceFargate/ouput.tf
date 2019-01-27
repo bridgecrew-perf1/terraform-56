@@ -65,10 +65,6 @@ output "ecs_service_iam_role" {
   value = "${aws_ecs_service.main.iam_role}"
 }
 
-output "ecs_service_desired_count" {
-  value = "${aws_ecs_service.main.}"
-}
-
 output "ecs_task_arn" {
   value = "${aws_ecs_task_definition.main.arn}"
 }
@@ -79,16 +75,4 @@ output "ecs_task_family" {
 
 output "ecs_task_revision" {
   value = "${aws_ecs_task_definition.main.revision}"
-}
-
-output "ecs_task_" {
-  value = "${aws_ecs_task_definition.main.}"
-}
-
-output "ecs_task_" {
-  value = "${aws_ecs_task_definition.main.}"
-}
-
-output "ecs_task_" {
-  value = "${aws_ecs_task_definition.main.}"
 }

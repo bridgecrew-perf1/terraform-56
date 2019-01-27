@@ -9,17 +9,9 @@ variable "subnet_ids" {
   default = []
 }
 
-variable "description" {
-  description = "Opportunity to explain the purpose for this subnet group"
-}
-
 /*
 Tags
 */
-variable "name" {
-  description = "Input the name of stack"
-  default     = ""
-}
 
 variable "tag_project" {
   description = "The name of the project this resource belongs to"

@@ -1,4 +1,6 @@
+
 // IAM Task and service
+
 data "aws_iam_policy_document" "assume_role_task" {
   statement {
     effect = "Allow"
@@ -11,8 +13,6 @@ data "aws_iam_policy_document" "assume_role_task" {
     }
   }
 }
-
-// IAM Policy for Preferences Write API
 data "aws_iam_policy_document" "task" {
   statement {
     sid = "taskECR"
@@ -36,6 +36,6 @@ data "aws_iam_policy_document" "task" {
         "logs:ListTagsLogGroup",
         "logs:PutLogEvents"
         ]
-      resources = ["${aws_cloudwatch_log_group.main.arn}:*"]
+      resources = ["arn:aws:logs:${var.region}:${var.account}:log-group:/aws/ecs/${var.cluster}/services/${var.name}:*"]
   }
 }

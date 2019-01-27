@@ -1,19 +1,30 @@
 variable "name" {}
 
-variable "iam_policy_path" {}
+variable "iam_policy_path" {
+  default = "/"
+}
+
+variable "region" {}
+
+variable "account" {}
 
 variable "vpc_id" {}
 
-variable "allowed_cidr" {}
+variable "allowed_cidr" {
+  type = "list"
+  default = ["0.0.0.0/0"]
+}
 
-variable "hport" {}
+variable "hport" {
+  default = 80
+}
 
 variable "cluster" {}
 
-variable "task_definition" {}
+variable "container_definitions" {}
 
 variable "desired_count" {
-  default = 0
+  default = 1
 }
 
 variable "launch_type" {
@@ -50,4 +61,8 @@ variable "env" {}
 
 variable "tag_costcenter" {}
 
-variable "tag_createdby" {}
+variable "tag_modifiedby" {}
+
+//variable "entrypoint" {
+//  type = "list"
+//}

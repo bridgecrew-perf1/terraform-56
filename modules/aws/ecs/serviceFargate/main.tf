@@ -36,7 +36,7 @@ resource "aws_cloudwatch_log_group" "main" {
     Project                    = "${var.tag_project}"
     Environment                = "${var.env}"
     awsCostCenter              = "${var.tag_costcenter}"
-    CreatedBy                  = "${var.tag_createdby}"
+    CreatedBy                  = "${var.tag_modifiedby}"
   }
 }
 
@@ -63,7 +63,7 @@ resource "aws_security_group" "main" {
     Project                    = "${var.tag_project}"
     Environment                = "${var.env}"
     awsCostCenter              = "${var.tag_costcenter}"
-    CreatedBy                  = "${var.tag_createdby}"
+    CreatedBy                  = "${var.tag_modifiedby}"
   }
 }
 
@@ -71,7 +71,7 @@ resource "aws_security_group" "main" {
 resource "aws_ecs_service" "main" {
   name            = "${var.name}"
   cluster         = "${var.cluster}"
-  task_definition = "${var.task_definition}"
+  task_definition = "${aws_ecs_task_definition.main.id}"
   desired_count   = "${var.desired_count}"
   launch_type     = "${var.launch_type}"
   iam_role        = "${aws_iam_role.main.arn}"
@@ -83,19 +83,15 @@ resource "aws_ecs_service" "main" {
   depends_on      = ["aws_ecs_task_definition.main"]
 }
 
-terraform {
-  required_version  = "> 0.11.2"
-}
-
 resource "aws_ecs_task_definition" "main" {
   family                = "${var.name}"
   task_role_arn = "${aws_iam_role.main.arn}"
   network_mode = "${var.network_mode}"
-  volume {
-    name      = "docker.sock"
-    host_path = "/ecs/service-storage"
-  }
-  container_definitions = ""
+//  volume {
+//    name      = "docker.sock"
+//    host_path = "/ecs/service-storage"
+//  }
+  container_definitions = "${var.container_definitions}"
   depends_on = ["aws_iam_role.main"]
 }
 

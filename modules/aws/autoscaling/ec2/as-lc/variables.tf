@@ -65,7 +65,7 @@ variable "ebs_block_device" {
 }
 
 # variable "ephemeral_block_device" {
-#   description = "Use if the instance type has ephemeral boot device only"
+#   description = "Use if the clusterInstance type has ephemeral boot device only"
 #   default = []
 # }
 
@@ -113,7 +113,7 @@ variable "desired_capacity" {
 
 
 # variable "health_check_grace_period" {
-#   description = "Time after instance comes into service before checking health OK/KO."
+#   description = "Time after clusterInstance comes into service before checking health OK/KO."
 #   default = "300"
 # }
 
