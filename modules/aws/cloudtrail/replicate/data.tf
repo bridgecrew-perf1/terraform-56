@@ -1,4 +1,8 @@
+/*
 
+Cloudtrail s3 bucket policy
+
+*/
 
 data "aws_iam_policy_document" "bucket" {
   statement {
@@ -23,15 +27,18 @@ data "aws_iam_policy_document" "bucket" {
   }
 }
 
+/*
+
+Cloudtrail kms key policy
+
+*/
+
 data "aws_iam_policy_document" "kms" {
   statement {
     sid = "EnableIamUserPermissions"
     effect = "Allow"
     principals {
-      identifiers = [
-        "arn:aws:iam::${var.account}:root",
-        "arn:aws:iam::${var.account}:user/hugo.almeida"
-      ]
+      identifiers = ["arn:aws:iam::${var.account}:root"]
       type = "AWS"
     }
     actions = ["kms:*"]
@@ -101,26 +108,6 @@ data "aws_iam_policy_document" "kms" {
     }
   }
   statement {
-    sid = "AllowAliasCreation"
-    effect = "Allow"
-    principals {
-      identifiers = ["*"]
-      type = "AWS"
-    }
-    actions = ["kms:CreateAlias"]
-    resources = ["*"]
-    condition {
-      test = "StringEquals"
-      values = ["ec2.${var.region}.amazonaws.com"]
-      variable = "kms:ViaService"
-    }
-    condition {
-      test = "StringEquals"
-      values = ["${var.account}"]
-      variable = "kms:CallerAccount"
-    }
-  }
-  statement {
     sid = "EnableCrossAccountLogDecryption"
     effect = "Allow"
     principals {
@@ -145,7 +132,11 @@ data "aws_iam_policy_document" "kms" {
   }
 }
 
-// Replication IAM
+/*
+
+Cloudtrail s3 bucket IAM policy for replication
+
+*/
 data "aws_iam_policy_document" "assume_replication" {
   statement {
     sid = "sts"
@@ -188,8 +179,11 @@ data "aws_iam_policy_document" "replication" {
   }
 }
 
-// Cloudwatch IAM
+/*
 
+Cloudtrail IAM policy for log Group
+
+*/
 data "aws_iam_policy_document" "assume_cloudwatch" {
   statement {
     sid = "sts"

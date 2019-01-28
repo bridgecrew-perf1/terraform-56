@@ -47,7 +47,7 @@ variable "kms_is_enabled" {
 }
 
 variable "s3_key_prefix" {
-  default = "logs/"
+  default = "logs"
 }
 
 variable "transition_days" {
@@ -64,6 +64,10 @@ variable "expirition_days" {
 
 variable "replication_configuration_status" {
   default = "Enabled"
+}
+
+variable "replication_configuration_prefix" {
+  default = ""
 }
 
 variable "s3_destination_account_id" {}
@@ -109,14 +113,6 @@ variable "read_write_type" {
 
 variable "include_management_events" {
   default = true
-}
-
-variable "lambda_arns" {
-  type = "list"
-}
-
-variable "s3_arns" {
-  type = "list"
 }
 
 variable "force_destroy" {

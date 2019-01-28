@@ -83,7 +83,6 @@ resource "aws_cloudwatch_log_group" "main" {
     awsCostCenter = "${var.tag_costcenter}"
     ModifiedBy = "${var.tag_modifiedby}"
   }
-//  depends_on = ["aws_kms_key.main", "aws_iam_policy.cloudwatch"]
 }
 
 resource "aws_s3_bucket" "main" {
@@ -109,7 +108,7 @@ resource "aws_s3_bucket" "main" {
     role = "${aws_iam_role.replication.arn}"
     rules {
       id = "${var.name}-replication"
-      prefix = "${var.name}/${var.s3_key_prefix}replica"
+      prefix = "${var.replication_configuration_prefix}"
       status = "${var.replication_configuration_status}"
       destination {
         account_id = "${var.s3_destination_account_id}"
@@ -126,16 +125,6 @@ resource "aws_s3_bucket" "main" {
       }
     }
   }
-//  object_lock_configuration {
-//    object_lock_enabled = "${var.object_lock_configuration_enabled}"
-//    rule = {
-//      default_retention = {
-//        mode = "${var.object_lock_configuration_default_retention_mode}"
-//        days = "${var.object_lock_configuration_default_retention_days}"
-//      }
-//    }
-//  }
-
   force_destroy = "${var.force_destroy}"
   tags {
     Name = "${var.name}"
@@ -166,12 +155,8 @@ resource "aws_cloudtrail" "main" {
     read_write_type = "${var.read_write_type}"
     include_management_events = "${var.include_management_events}"
     data_resource {
-      type = "AWS::Lambda::Function"
-      values = ["${var.lambda_arns}"]
-    }
-    data_resource {
       type = "AWS::S3::Object"
-      values = ["${var.s3_arns}"]
+      values = ["${aws_s3_bucket.main.arn}/"]
     }
   }
   tags {
