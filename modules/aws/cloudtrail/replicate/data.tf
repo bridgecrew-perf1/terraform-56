@@ -151,31 +151,75 @@ data "aws_iam_policy_document" "assume_replication" {
 
 data "aws_iam_policy_document" "replication" {
   statement {
-    sid = "GetRepConfiguration"
+    sid = "SourceGetRepConfiguration"
     effect = "Allow"
     actions = [
+      "s3:ListBucket",
       "s3:GetReplicationConfiguration",
-      "s3:ListBucket"
+      "s3:GetObjectVersionForReplication",
+      "s3:GetObjectVersionAcl",
+      "s3:GetObjectVersionTagging"
     ]
-    resources = ["${aws_s3_bucket.main.arn}/*"]
+    resources = [
+      "${aws_s3_bucket.main.arn}",
+      "${aws_s3_bucket.main.arn}/*"
+    ]
   }
   statement {
-    sid = "GetObjectVersion"
-    effect = "Allow"
-    actions = [
-      "s3:GetObjectVersion",
-      "s3:GetObjectVersionAcl"
-    ]
-    resources = ["${aws_s3_bucket.main.arn}/*"]
-  }
-  statement {
-    sid = "ReplicateDestiantion"
+    sid = "DestimationReplicationConfiguration"
     effect = "Allow"
     actions = [
       "s3:ReplicateObject",
-      "s3:ReplicateDelete"
+      "s3:ReplicateDelete",
+      "s3:ReplicateTags",
+      "s3:GetObjectVersionTagging"
     ]
     resources = ["${var.s3_destination_bucket_arn}/*"]
+    condition {
+      test = "StringLikeIfExists"
+      values = [
+        "aws:kms",
+        "AES256"
+      ]
+      variable = "s3:x-amz-server-side-encryption"
+    }
+    condition {
+      test = "StringLikeIfExists"
+      values = ["${var.s3_destination_kms_key_id}"]
+      variable = "s3:x-amz-server-side-encryption-aws-kms-key-id"
+    }
+  }
+  statement {
+    sid = "SourceDecrypt"
+    effect = "Allow"
+    actions = ["kms:Decrypt"]
+    resources = ["${aws_kms_key.main.arn}/*"]
+    condition {
+      test = "StringLike"
+      values = ["s3.${var.region}.amazonaws.com"]
+      variable = "kms:ViaService"
+    }
+    condition {
+      test = "StringLike"
+      values = ["${aws_s3_bucket.main.arn}/*"]
+      variable = "kms:EncryptionContext:aws:s3:arn"
+    }
+  }
+  statement {
+    sid = "DestinationEncrypt"
+    effect = "Allow"
+    actions = ["kms:Encrypt"]
+    resources = ["${var.s3_destination_kms_key_id}"]
+    condition {
+      test = "StringLike"
+      values = ["s3.${var.s3_destination_region}.amazonaws.com"]
+      variable = "kms:ViaService"
+    }
+    condition {
+      test = "StringLike"
+      values = ["${var.s3_destination_bucket_arn}/*"]
+      variable = "kms:EncryptionContext:aws:s3:arn"
+    }
   }
 }
 

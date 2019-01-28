@@ -3,8 +3,8 @@ terraform {
 }
 
 resource "aws_iam_role" "replication" {
-  description                 = "${var.name} cloudtrail replication Role"
-  name                        = "${var.name}_cloudtrail_replication_role"
+  description                 = "${var.name} replication Role"
+  name                        = "${var.name}_replication_role"
   path                        = "${var.iam_policy_path}"
   assume_role_policy          = "${data.aws_iam_policy_document.assume_replication.json}"
   tags {
@@ -17,8 +17,8 @@ resource "aws_iam_role" "replication" {
 }
 
 resource "aws_iam_policy" "replication" {
-  name                      = "${var.name}_cloudtrail_replication_policy"
-  description               = "${var.name} cloudtrail replication policy"
+  name                      = "${var.name}_replication_policy"
+  description               = "${var.name} replication policy"
   path                      = "${var.iam_policy_path}"
   policy                    = "${data.aws_iam_policy_document.replication.json}"
 }
@@ -30,8 +30,8 @@ resource "aws_iam_policy_attachment" "replication" {
 }
 
 resource "aws_iam_role" "cloudwatch" {
-  description                 = "${var.name} cloudtrail cloudwatch Role"
-  name                        = "${var.name}_cloudtrail_cloudwatch_role"
+  description                 = "${var.name} cloudwatch Role"
+  name                        = "${var.name}_cloudwatch_role"
   path                        = "${var.iam_policy_path}"
   assume_role_policy          = "${data.aws_iam_policy_document.assume_cloudwatch.json}"
   tags {
@@ -44,14 +44,14 @@ resource "aws_iam_role" "cloudwatch" {
 }
 
 resource "aws_iam_policy" "cloudwatch" {
-  name                      = "${var.name}_cloudtrail_cloudwatch_policy"
-  description               = "${var.name} cloudtrail replication policy"
+  name                      = "${var.name}_cloudwatch_policy"
+  description               = "${var.name} cloudwatch policy"
   path                      = "${var.iam_policy_path}"
   policy                    = "${data.aws_iam_policy_document.cloudwatch.json}"
 }
 
 resource "aws_iam_policy_attachment" "cloudwatch" {
-  name                      = "${var.name}_cloudtrail_cloudwatch_attachment"
+  name                      = "${var.name}_cloudwatch_attachment"
   roles                     = ["${aws_iam_role.cloudwatch.name}"]
   policy_arn                = "${aws_iam_policy.cloudwatch.arn}"
 }
@@ -108,12 +108,18 @@ resource "aws_s3_bucket" "main" {
     role = "${aws_iam_role.replication.arn}"
     rules {
       id = "${var.name}-replication"
-      prefix = "${var.replication_configuration_prefix}"
+//      prefix = "${var.replication_configuration_prefix}"
       status = "${var.replication_configuration_status}"
       destination {
         account_id = "${var.s3_destination_account_id}"
         bucket = "${var.s3_destination_bucket_arn}"
+        replica_kms_key_id = "${var.s3_destination_kms_key_id}"
         storage_class = "${var.storage_class}"
+      }
+      source_selection_criteria {
+        sse_kms_encrypted_objects {
+          enabled = "${var.source_selection_criteria_sse_status}"
+        }
       }
     }
   }

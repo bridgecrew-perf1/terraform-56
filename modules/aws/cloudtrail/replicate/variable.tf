@@ -74,21 +74,16 @@ variable "s3_destination_account_id" {}
 
 variable "s3_destination_bucket_arn" {}
 
+variable "s3_destination_kms_key_id" {}
+
+variable "s3_destination_region" {}
+
 variable "storage_class" {
   default = "STANDARD_IA"
 }
 
-variable "object_lock_configuration_enabled" {
-  default = "Enabled"
-}
-
-variable "object_lock_configuration_default_retention_mode" {
-  description = "Governance - you can delete; Compliance you cannot delete"
-  default = "GOVERNANCE"
-}
-
-variable "object_lock_configuration_default_retention_days" {
-  default = 720
+variable "source_selection_criteria_sse_status" {
+  default = true
 }
 
 variable "enable_logging" {
