@@ -13,7 +13,7 @@ data "aws_iam_policy_document" "bucket" {
       type = "Service"
     }
     actions = ["s3:PutObject"]
-    resources = ["arn:aws:s3:::cloudtrail-121975435217-eu-west-1/*"]
+    resources = ["${aws_s3_bucket.main.arn}/*"]
   }
   statement {
     sid = "AWSCloudtrailGetAcl"
@@ -23,7 +23,7 @@ data "aws_iam_policy_document" "bucket" {
       type = "Service"
     }
     actions = ["s3:GetBucketAcl"]
-    resources = ["arn:aws:s3:::cloudtrail-121975435217-eu-west-1"]
+    resources = ["${aws_s3_bucket.main.arn}"]
   }
 }
 
