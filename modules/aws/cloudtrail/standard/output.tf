@@ -51,6 +51,3 @@ output "s3_bucket_bucket" {
   value = "${aws_s3_bucket.main.bucket}"
 }
 
-output "s3_bucket_replication_configuration" {
-  value = "${aws_s3_bucket.main.replication_configuration}"
-}
