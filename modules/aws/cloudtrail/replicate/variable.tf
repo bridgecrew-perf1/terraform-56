@@ -1,5 +1,7 @@
 variable "name" {}
 
+variable "family" {}
+
 variable "iam_policy_path" {
   default = "/"
 }

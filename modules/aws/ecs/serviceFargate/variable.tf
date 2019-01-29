@@ -1,7 +1,17 @@
 variable "name" {}
 
+variable "family" {}
+
 variable "iam_policy_path" {
   default = "/"
+}
+
+variable "cpu" {
+  default = 256
+}
+
+variable "memory" {
+  default = 1024
 }
 
 variable "region" {}

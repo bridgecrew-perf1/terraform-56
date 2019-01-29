@@ -49,30 +49,30 @@ output "security_group_name" {
 }
 
 // ECS Service and Task Definition
-output "ecs_service_name" {
-  value = "${aws_ecs_service.main.name}"
-}
-
-output "ecs_service_id" {
-  value = "${aws_ecs_service.main.id}"
-}
-
-output "ecs_service_cluster" {
-  value = "${aws_ecs_service.main.cluster}"
-}
-
-output "ecs_service_iam_role" {
-  value = "${aws_ecs_service.main.iam_role}"
-}
-
-output "ecs_task_arn" {
-  value = "${aws_ecs_task_definition.main.arn}"
-}
-
-output "ecs_task_family" {
-  value = "${aws_ecs_task_definition.main.family}"
-}
-
-output "ecs_task_revision" {
-  value = "${aws_ecs_task_definition.main.revision}"
-}
+//output "ecs_service_name" {
+//  value = "${aws_ecs_service.main.name}"
+//}
+//
+//output "ecs_service_id" {
+//  value = "${aws_ecs_service.main.id}"
+//}
+//
+//output "ecs_service_cluster" {
+//  value = "${aws_ecs_service.main.cluster}"
+//}
+//
+//output "ecs_service_iam_role" {
+//  value = "${aws_ecs_service.main.iam_role}"
+//}
+//
+//output "ecs_task_arn" {
+//  value = "${aws_ecs_task_definition.main.arn}"
+//}
+//
+//output "ecs_task_family" {
+//  value = "${aws_ecs_task_definition.main.family}"
+//}
+//
+//output "ecs_task_revision" {
+//  value = "${aws_ecs_task_definition.main.revision}"
+//}
