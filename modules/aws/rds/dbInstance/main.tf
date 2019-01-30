@@ -14,8 +14,9 @@ resource "aws_db_instance" "main" {
   enabled_cloudwatch_logs_exports     = "${var.enabled_cloudwatch_logs_exports}"
   engine                              = "${var.engine}"
   engine_version                      = "${var.engine_version}"
-  final_snapshot_identifier           = "${var.name}_final_snapshot"
+  final_snapshot_identifier           = "${var.name}finalsnapshot"
   iam_database_authentication_enabled = "${var.iam_database_authentication_enabled}"
+  identifier			      = "${var.name}"
   publicly_accessible                 = "${var.publicly_accessible}"
   instance_class                      = "${var.instance_class}"
   kms_key_id                          = "${var.kms_key_id}"
@@ -30,10 +31,8 @@ resource "aws_db_instance" "main" {
   username                            = "${var.username}"
   password                            = "${var.password}"
   port                                = "${var.port}"
-//  replicate_source_db                 = "${var.replicate_source_db}"
   vpc_security_group_ids              = ["${var.vpc_security_group_ids}"]
   skip_final_snapshot                 = "${var.skip_final_snapshot}"
-  snapshot_identifier                 = "${var.name}"
   storage_encrypted                   = "${var.storage_encrypted}"
   storage_type                        = "${var.storage_type}"
   tags {

@@ -1,5 +1,5 @@
 variable "allocated_storage" {
-  default = "1"
+  default = "5"
 }
 
 variable "allow_major_version_upgrade" {
@@ -49,21 +49,9 @@ variable "publicly_accessible" {
   default = false
 }
 
-//variable "identifier" {
-//  default = ""
-//}
-
-//variable "identifier_prefix" {
-//  default = ""
-//}
-
 variable "instance_class" {
   default = "db.t2.micro"
 }
-
-//variable "iops" {
-//  default = ""
-//}
 
 variable "kms_key_id" {
   default = ""
