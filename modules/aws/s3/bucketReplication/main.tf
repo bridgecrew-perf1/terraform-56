@@ -71,8 +71,8 @@ resource "aws_s3_bucket" "main" {
       status = "${var.replication_configuration_status}"
       destination {
         account_id = "${var.s3_destination_account_id}"
-        bucket = "${var.s3_destination_bucket_arn}"
-        replica_kms_key_id = "${var.s3_destination_kms_key_id}"
+        bucket = "${aws_s3_bucket.main.arn}"
+        replica_kms_key_id = "${aws_kms_key.main.id}"
         storage_class = "${var.storage_class}"
       }
       source_selection_criteria {

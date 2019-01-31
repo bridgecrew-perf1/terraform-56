@@ -1,6 +1,6 @@
 /*
 
-Cloudtrail s3 bucket policy
+Destination Replication s3 bucket policy
 
 */
 
@@ -20,7 +20,7 @@ data "aws_iam_policy_document" "bucket" {
       "s3:ObjectOwnerOverrideToBucketOwner"
     ]
     resources = [
-      "${aws_s3_bucket.main.arn}"
+      "${aws_s3_bucket.main.arn}",
       "${aws_s3_bucket.main.arn}/*"
     ]
   }
@@ -28,7 +28,7 @@ data "aws_iam_policy_document" "bucket" {
 
 /*
 
-Cloudtrail kms key policy
+Destination kms key policy
 
 */
 
@@ -97,7 +97,7 @@ data "aws_iam_policy_document" "replication" {
       "s3:ReplicateTags",
       "s3:GetObjectVersionTagging"
     ]
-    resources = ["${var.s3_destination_bucket_arn}/*"]
+    resources = ["${aws_s3_bucket.main.arn}/*"]
     condition {
       test = "StringLikeIfExists"
       values = [
@@ -108,7 +108,7 @@ data "aws_iam_policy_document" "replication" {
     }
     condition {
       test = "StringLikeIfExists"
-      values = ["${var.s3_destination_kms_key_id}"]
+      values = ["${aws_kms_key.main.id}"]
       variable = "s3:x-amz-server-side-encryption-aws-kms-key-id"
     }
   }
@@ -132,15 +132,15 @@ data "aws_iam_policy_document" "replication" {
     sid = "DestinationEncrypt"
     effect = "Allow"
     actions = ["kms:Encrypt"]
-    resources = ["${var.s3_destination_kms_key_id}"]
+    resources = ["${aws_kms_key.main.id}"]
     condition {
       test = "StringLike"
-      values = ["s3.${var.s3_destination_region}.amazonaws.com"]
+      values = ["s3.${var.region}.amazonaws.com"]
       variable = "kms:ViaService"
     }
     condition {
       test = "StringLike"
-      values = ["${var.s3_destination_bucket_arn}/*"]
+      values = ["${aws_s3_bucket.main.arn}/*"]
       variable = "kms:EncryptionContext:aws:s3:arn"
     }
   }
