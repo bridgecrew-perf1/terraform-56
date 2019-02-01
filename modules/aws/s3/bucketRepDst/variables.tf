@@ -64,7 +64,11 @@ variable "replication_configuration_status" {
 
 variable "s3_destination_account_id" {}
 
-variable "storage_class" {
+variable "s3_destination_bucket_arn" {}
+
+variable "s3_destination_kms_key_id" {}
+
+variable "s3_destination_storage_class" {
   default = "STANDARD_IA"
 }
 
@@ -85,4 +89,3 @@ variable "tag_costcenter" {}
 
 variable "tag_modifiedby" {}
 
-variable "account" {}

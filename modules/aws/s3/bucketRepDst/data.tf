@@ -37,7 +37,7 @@ data "aws_iam_policy_document" "kms" {
     sid = "EnableIamUserPermissions"
     effect = "Allow"
     principals {
-      identifiers = ["arn:aws:iam::${var.account}:root"]
+      identifiers = ["arn:aws:iam::${var.source_account}:root"]
       type = "AWS"
     }
     actions = ["kms:*"]
