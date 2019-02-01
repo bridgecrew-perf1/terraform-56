@@ -1,82 +1,72 @@
 variable "name" {}
 
-variable "iam_policy_path" {
-  default = "/"
-}
-
-variable "acl" {
-  default = "private"
-}
-
-variable "versioning_enabled" {
-  default = true
-}
-
-variable "source_account" {}
+variable "account" {}
 
 variable "region" {
   default = "eu-west-2"
 }
 
-variable "lifecycle_rule_enabled" {
-  default = false
-}
-
-variable "key_usage" {
+// KMS key variables
+variable "kms_key_usage" {
   default = "ENCRYPT_DECRYPT"
-}
-
-variable "is_enable" {
-  default = true
-}
-
-variable "enable_key_rotation" {
-  default = false
-}
-
-variable "deletion_window_in_days" {
-  default = 30
 }
 
 variable "kms_is_enabled" {
   default = true
 }
-
-variable "s3_key_prefix" {
-  default = "logs"
+variable "kms_enable_key_rotation" {
+  default = false
 }
 
-variable "transition_days" {
-  default = 90 # 3 months
+variable "kms_deletion_window_in_days" {
+  default = 30
 }
 
-variable "transition_storage_class" {
-  default = "STANDARD_IA"
+// s3 variables
+variable "s3_acl" {
+  default = "private"
 }
 
-variable "expirition_days" {
-  default = 720 # 2 years
-}
-
-variable "replication_configuration_status" {
-  default = "Enabled"
-}
-
-variable "s3_destination_account_id" {}
-
-variable "s3_destination_bucket_arn" {}
-
-variable "s3_destination_kms_key_id" {}
-
-variable "s3_destination_storage_class" {
-  default = "STANDARD_IA"
-}
-
-variable "source_selection_criteria_sse_status" {
+variable "s3_versioning_enabled" {
   default = true
 }
 
-variable "force_destroy" {
+variable "s3_lifecycle_rule_enabled" {
+  default = false
+}
+
+
+variable "s3_key_prefix" {}
+
+variable "s3_transition_days" {
+  default = 90 # 3 months
+}
+
+variable "s3_transition_storage_class" {
+  default = "STANDARD_IA"
+}
+
+variable "s3_expirition_days" {
+  default = 365 # 1 years
+}
+
+
+variable "s3_object_lock_configuration_status" {
+  default = "Enabled"
+}
+
+variable "s3_object_lock_configuration_mode" {
+  description = "Governance = Permissions allow to remove OL, Compliance = can't remove OL"
+  default = "GOVERNANCE"
+}
+
+variable "s3_object_lock_configuration_years" {
+  default = 3
+}
+
+variable "s3_source_account" {}
+
+variable "s3_force_destroy" {
   default = false
 }
 

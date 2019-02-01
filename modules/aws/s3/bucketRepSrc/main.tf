@@ -1,41 +1,15 @@
 terraform {
-  required_version  = "> 0.9.8"
+  required_version  = "> 0.11.0"
 }
 
-resource "aws_iam_role" "replication" {
-  description                 = "${var.name} replication Role"
-  name                        = "${var.name}_replication_role"
-  path                        = "${var.iam_policy_path}"
-  assume_role_policy          = "${data.aws_iam_policy_document.assume_replication.json}"
-  tags {
-    Name = "${var.name}_replication_role"
-    Project = "${var.tag_project}"
-    Environment = "${var.env}"
-    awsCostCenter = "${var.tag_costcenter}"
-    ModifiedBy = "${var.tag_modifiedby}"
-  }
-}
-
-resource "aws_iam_policy" "replication" {
-  name                      = "${var.name}_replication_policy"
-  description               = "${var.name} replication policy"
-  path                      = "${var.iam_policy_path}"
-  policy                    = "${data.aws_iam_policy_document.replication.json}"
-}
-
-resource "aws_iam_policy_attachment" "replication" {
-  name                      = "${var.name}_cloudtrail_replication_attachment"
-  roles                     = ["${aws_iam_role.replication.name}"]
-  policy_arn                = "${aws_iam_policy.replication.arn}"
-}
 
 resource "aws_kms_key" "main" {
-  description = "${var.name} cloudtrail kms key"
-  key_usage = "${var.key_usage}"
+  description = "${var.name} destination bucket kms key"
+  key_usage = "${var.kms_key_usage}"
   policy = "${data.aws_iam_policy_document.kms.json}"
   is_enabled = "${var.kms_is_enabled}"
-  enable_key_rotation = "${var.enable_key_rotation}"
-  deletion_window_in_days = "${var.deletion_window_in_days}"
+  enable_key_rotation = "${var.kms_enable_key_rotation}"
+  deletion_window_in_days = "${var.kms_deletion_window_in_days}"
   tags {
     Name = "${var.name}"
     Project = "${var.tag_project}"
@@ -47,38 +21,29 @@ resource "aws_kms_key" "main" {
 
 resource "aws_s3_bucket" "main" {
   bucket = "${var.name}"
-  acl = "${var.acl}"
+  acl = "${var.s3_acl}"
   versioning {
-    enabled = "${var.versioning_enabled}"
+    enabled = "${var.s3_versioning_enabled}"
   }
   region = "${var.region}"
   lifecycle_rule {
-    enabled = "${var.lifecycle_rule_enabled}"
+    enabled = "${var.s3_lifecycle_rule_enabled}"
     id = "${var.name}"
     prefix = "${var.s3_key_prefix}"
     transition {
-      days = "${var.transition_days}"
-      storage_class = "${var.transition_storage_class}"
+      days = "${var.s3_transition_days}"
+      storage_class = "${var.s3_transition_storage_class}"
     }
     expiration {
-      days = "${var.expirition_days}"
+      days = "${var.s3_expirition_days}"
     }
   }
-  replication_configuration {
-    role = "${aws_iam_role.replication.arn}"
-    rules {
-      id = "${var.name}-replication"
-      status = "${var.replication_configuration_status}"
-      destination {
-        account_id = "${var.s3_destination_account_id}"
-        bucket = "${var.s3_destiantion_bucket_arn}"
-        replica_kms_key_id = "${var.s3_destination_kms_key.id}"
-        storage_class = "${var.s3_destination_storage_class}"
-      }
-      source_selection_criteria {
-        sse_kms_encrypted_objects {
-          enabled = "${var.source_selection_criteria_sse_status}"
-        }
+  object_lock_configuration {
+    object_lock_enabled = "${var.s3_object_lock_configuration_status}"
+    rule = {
+      default_retention = {
+        mode = "${var.s3_object_lock_configuration_mode}"
+        years = "${var.s3_object_lock_configuration_years}"
       }
     }
   }
@@ -90,7 +55,7 @@ resource "aws_s3_bucket" "main" {
       }
     }
   }
-  force_destroy = "${var.force_destroy}"
+  force_destroy = "${var.s3_force_destroy}"
   tags {
     Name = "${var.name}"
     Project = "${var.tag_project}"
