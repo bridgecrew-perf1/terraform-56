@@ -26,7 +26,7 @@ resource "aws_autoscaling_group" "main" {
   tags = [
     {
       key                 = "Name"
-      value               = "${var.as_version}.${var.name}.as"
+      value               = "${var.name}.${count.index}.as"
       propagate_at_launch = true
     },
     {

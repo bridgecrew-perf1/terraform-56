@@ -11,7 +11,7 @@ resource "aws_vpc" "main" {
   enable_dns_support            = "${var.enable_dns_support}"
   enable_dns_hostnames          = "${var.enable_dns_hostnames}"
   tags {
-    Name                       = "${var.name}.vpc.${count.index}"
+    Name                       = "${var.name}"
     Project                    = "${var.tag_project}"
     Environment                = "${var.tag_env}"
     awsCostCenter              = "${var.tag_costcenter}"
@@ -159,7 +159,7 @@ resource "aws_route" "public_internet_gateway" {
 Public Subnets
 */
 resource "aws_subnet" "public" {
-  count                         = "${length(var.public_subnets) > 0 ? length(var.private_subnets) : 0}"
+  count                         = "${length(var.public_subnets) > 0 ? length(var.public_subnets) : 0}"
   vpc_id                        = "${aws_vpc.main.id}"
   cidr_block                    = "${element(var.public_subnets, count.index)}"
   availability_zone             = "${element(var.azs, count.index)}"
@@ -221,6 +221,7 @@ resource "aws_subnet" "private" {
 EIP for NAT Gateway
 */
 resource "aws_eip" "nat" {
+  count                        = "${length(var.private_subnets) > 0 ? 1 : 0}"
   vpc                          = true
 }
 
@@ -228,6 +229,7 @@ resource "aws_eip" "nat" {
 NAT Gateway
 */
 resource "aws_nat_gateway" "main" {
+  count = "${length(var.private_subnets) > 0 ? 1 : 0}"
   allocation_id                = "${aws_eip.nat.id}"
   subnet_id                    = "${aws_subnet.public.0.id}"
   tags {
@@ -251,7 +253,7 @@ resource "aws_route" "private_nat_gateway" {
 Private Route Association
 */
 resource "aws_route_table_association" "private" {
-  count                        = "${length(var.private_subnets)}"
+  count                        = "${length(var.private_subnets) > 0 ? length(var.private_subnets) : 0}"
   subnet_id                    = "${element(aws_subnet.private.*.id, count.index)}"
   route_table_id               = "${element(aws_route_table.private.*.id, count.index)}"
 }

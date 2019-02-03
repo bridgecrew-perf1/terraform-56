@@ -23,7 +23,7 @@ variable "instance_type" {
   default = ""
 }
 
-variable "instance_iam_role" {
+variable "iam_instance_profile" {
   description = "IAM role ARN to attach to your instances"
   default = ""
 }

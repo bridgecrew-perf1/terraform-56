@@ -9,7 +9,7 @@ resource "aws_launch_configuration" "main" {
   name                        = "${var.lc_version}.${var.name}.lc"
   image_id                    = "${var.ami_id}"
   instance_type               = "${var.instance_type}"
-  iam_instance_profile        = "${var.instance_iam_role}"
+  iam_instance_profile        = "${var.iam_instance_profile}"
   key_name                    = "${var.key_name}"
   security_groups             = ["${var.security_groups}"]
   associate_public_ip_address = "${var.associate_public_ip_address}"

@@ -2,11 +2,6 @@
 Auto Scaling variable definition
 */
 
-variable "name" {
-  description = "Input the name of stack"
-  default     = ""
-}
-
 variable "as_version" {
   description = "The version og the config to avoid naming conflict"
   default = ""
@@ -46,7 +41,7 @@ variable "desired_capacity" {
 
 
 # variable "health_check_grace_period" {
-#   description = "Time after clusterInstance comes into service before checking health OK/KO."
+#   description = "Time after instance comes into service before checking health OK/KO."
 #   default = "300"
 # }
 
@@ -88,7 +83,7 @@ variable "termination_policies" {
 # }
 
 # variable "placement_group" {
-#   description = "The name of the placement groupCustomPol, instances cannot be spanned across multiple AZs"
+#   description = "The name of the placement group, instances cannot be spanned across multiple AZs"
 #   default = ""
 # }
 
@@ -111,7 +106,6 @@ variable "protect_from_scale_in" {
 /*
 Tags
 */
-
 variable "tag_project" {
   description = "The name of the project this resource belongs to"
   default     = ""

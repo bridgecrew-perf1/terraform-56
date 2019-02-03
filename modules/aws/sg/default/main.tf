@@ -7,7 +7,7 @@ Security Group
 */
 resource "aws_security_group" "main" {                      
   name                        = "${var.name}"
-  description                 = "${var.description}"
+  description                 = "${var.name} Security Group"
   vpc_id                      = "${var.vpc_id}"
 
   ingress {

@@ -1,8 +1,4 @@
 
-variable "description" {
-  description = "Description of the security group"
-  default = ""
-}
 
 variable "vpc_id" {
   description = "The vpc id to create the security group in"
