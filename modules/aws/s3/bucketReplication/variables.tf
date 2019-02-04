@@ -4,22 +4,18 @@ variable "iam_policy_path" {
   default = "/"
 }
 
-variable "lg_retention_in_days" {
-  default = 731
-}
-
 variable "acl" {
   default = "private"
 }
-
-variable "cloudtrail_service" {}
 
 variable "versioning_enabled" {
   default = true
 }
 
+variable "source_account" {}
+
 variable "region" {
-  default = "eu-west-1"
+  default = "eu-west-2"
 }
 
 variable "lifecycle_rule_enabled" {
@@ -66,49 +62,17 @@ variable "replication_configuration_status" {
   default = "Enabled"
 }
 
-variable "replication_configuration_prefix" {
-  default = ""
-}
-
 variable "s3_destination_account_id" {}
 
 variable "s3_destination_bucket_arn" {}
 
 variable "s3_destination_kms_key_id" {}
 
-variable "s3_destination_kms_key_arn" {}
-
-variable "s3_destination_region" {}
-
-variable "storage_class" {
+variable "s3_destination_storage_class" {
   default = "STANDARD_IA"
 }
 
 variable "source_selection_criteria_sse_status" {
-  default = true
-}
-
-variable "enable_logging" {
-  default = true
-}
-
-variable "include_global_service_events" {
-  default = true
-}
-
-variable "is_multi_region_trail" {
-  default = true
-}
-
-variable "enable_log_file_validation" {
-  default = true
-}
-
-variable "read_write_type" {
-  default = "All"
-}
-
-variable "include_management_events" {
   default = true
 }
 
@@ -125,4 +89,3 @@ variable "tag_costcenter" {}
 
 variable "tag_modifiedby" {}
 
-variable "account" {}

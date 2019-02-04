@@ -1,3 +1,5 @@
+// Cloudtrail
+
 output "cloudtrail_id" {
   value = "${aws_cloudtrail.main.id}"
 }
@@ -10,12 +12,21 @@ output "cloudtrail_arn" {
   value = "${aws_cloudtrail.main.arn}"
 }
 
+//
 output "log_group" {
   value = "${aws_cloudwatch_log_group.main.arn}"
 }
 
 output "replication_iam_role_arn" {
   value = "${aws_iam_role.replication.arn}"
+}
+
+output "replication_iam_role_id" {
+  value = "${aws_iam_role.replication.id}"
+}
+
+output "replication_iam_role_unique_id" {
+  value = "${aws_iam_role.replication.unique_id}"
 }
 
 output "cloudwatch_iam_role_arn" {

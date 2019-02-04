@@ -9,8 +9,8 @@ data "aws_iam_policy_document" "bucket" {
     sid = "AWSCloudtrailGetAcl"
     effect = "Allow"
     principals {
-      identifiers = ["${var.s3_source_account_resource_arn}"]
-      type = "AWS"
+      identifiers = ["arn:aws:iam::${var.source_account}:root"]
+      type = "Service"
     }
     actions = [
       "s3:GetBucketVersioning",
@@ -37,17 +37,17 @@ data "aws_iam_policy_document" "kms" {
     sid = "EnableIamUserPermissions"
     effect = "Allow"
     principals {
-      identifiers = ["arn:aws:iam::${var.account}:root"]
+      identifiers = ["arn:aws:iam::${var.source_account}:root"]
       type = "AWS"
     }
     actions = ["kms:*"]
     resources = ["*"]
   }
   statement {
-    sid = "Allow${var.s3_source_account}Encrypt"
+    sid = "Allow${var.source_account}EncryptLogs"
     effect = "Allow"
     principals {
-      identifiers = ["${var.s3_source_account}"]
+      identifiers = ["${var.source_account}"]
       type = "AWS"
     }
     actions = ["kms:GenerateDataKey*"]

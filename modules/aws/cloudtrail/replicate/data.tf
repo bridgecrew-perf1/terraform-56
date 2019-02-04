@@ -209,7 +209,7 @@ data "aws_iam_policy_document" "replication" {
     sid = "DestinationEncrypt"
     effect = "Allow"
     actions = ["kms:Encrypt"]
-    resources = ["${var.s3_destination_kms_key_id}"]
+    resources = ["${var.s3_destination_kms_key_arn}"]
     condition {
       test = "StringLike"
       values = ["s3.${var.s3_destination_region}.amazonaws.com"]
