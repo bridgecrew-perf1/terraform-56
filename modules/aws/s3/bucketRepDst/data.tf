@@ -47,10 +47,10 @@ data "aws_iam_policy_document" "kms" {
     sid = "Allow${var.s3_source_account}Encrypt"
     effect = "Allow"
     principals {
-      identifiers = ["${var.s3_source_account}"]
+      identifiers = ["arn:aws:iam::${var.s3_source_account}:root"]
       type = "AWS"
     }
-    actions = ["kms:GenerateDataKey*"]
+    actions = ["kms:Encrypt"]
     resources = ["*"]
   }
 }
