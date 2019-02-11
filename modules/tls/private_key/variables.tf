@@ -1,5 +1,5 @@
 variable "algorithm" {
-  default = "rsa"
+  default = "RSA"
 }
 
 variable "ecdsa_curve" {
