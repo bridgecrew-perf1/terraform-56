@@ -13,14 +13,14 @@ resource "aws_iam_role" "main" {
   description                 = "${var.name} ECS Service IAM Role"
   name                        = "${var.name}._ecs_service_iam_role"
   path                        = "${var.iam_policy_path}"
-  assume_role_policy          = "${data.aws_iam_policy_document.assume_role_task.json}"
+  assume_role_policy          = "${var.assume_role_policy}"
 }
 
 resource "aws_iam_policy" "main" {
     name                      = "${var.name}.iam_pol"
     description               = "${var.name} ECS Service IAM policy"
     path                      = "${var.iam_policy_path}"
-    policy                    = "${data.aws_iam_policy_document.task.json}"
+    policy                    = "${var.policy}"
 }
 
 resource "aws_iam_policy_attachment" "main" {
@@ -85,14 +85,15 @@ resource "aws_ecs_service" "main" {
 resource "aws_ecs_task_definition" "main" {
   family = "${var.family}"
   task_role_arn = "${aws_iam_role.main.arn}"
+  execution_role_arn = "${aws_iam_role.main.arn}"
   network_mode = "${var.network_mode}"
   requires_compatibilities = ["FARGATE"]
   cpu = "${var.cpu}"
   memory = "${var.memory}"
-//  volume {
-//    name      = "docker.sock"
-//    host_path = "/ecs/service-storage"
-//  }
+  volume {
+    name      = "docker_sock"
+//    host_path = "/var/run/docker.sock"
+  }
   container_definitions = "${var.container_definitions}"
   depends_on = ["aws_iam_role.main"]
 }

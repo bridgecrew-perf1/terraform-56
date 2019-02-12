@@ -76,3 +76,7 @@ variable "tag_modifiedby" {}
 //variable "entrypoint" {
 //  type = "list"
 //}
+
+variable "policy" {}
+
+variable "assume_role_policy" {}
