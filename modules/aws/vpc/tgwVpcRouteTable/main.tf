@@ -1,0 +1,20 @@
+terraform {
+  required_version = "> 0.11.10"
+}
+
+resource "aws_ec2_transit_gateway_route_table" "main" {
+  transit_gateway_id = "${var.transit_gateway_id}"
+  tags {
+    Name                        = "${var.name}"
+    Project                     = "${var.tag_project}"
+    Environment                 = "${var.tag_env}"
+    awsCostCenter               = "${var.tag_costcenter}"
+    LastModifyBy                = "${var.tag_lastmodifyby}"
+    LastModifyDate              = "${var.tag_lastmodifydate}"
+  }
+}
+
+resource "aws_ec2_transit_gateway_route_table_association" "main" {
+  transit_gateway_attachment_id  = "${var.transit_gateway_attachment_id}"
+  transit_gateway_route_table_id = "${aws_ec2_transit_gateway_route_table.main.id}"
+}
