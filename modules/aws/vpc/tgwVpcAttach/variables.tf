@@ -15,9 +15,9 @@ variable "tgw_vpc_ipv6_support" {
 }
 
 variable "transit_gateway_default_route_table_association" {
-  default = false
+  default = true
 }
 
 variable "transit_gateway_default_route_table_propagation" {
-  default = false
+  default = true
 }
