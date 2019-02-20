@@ -182,19 +182,3 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "main" {
   }
 }
 
-resource "aws_ec2_transit_gateway_route" "main" {
-  destination_cidr_block         = "${var.cidr}"
-  transit_gateway_attachment_id  = "${aws_ec2_transit_gateway_vpc_attachment.main.id}"
-  transit_gateway_route_table_id = "${aws_ec2_transit_gateway.main.association_default_route_table_id}"
-}
-
-resource "aws_ec2_transit_gateway_route_table_association" "main" {
-  transit_gateway_attachment_id  = "${aws_ec2_transit_gateway_vpc_attachment.main.id}"
-  transit_gateway_route_table_id = "${aws_ec2_transit_gateway.main.association_default_route_table_id}"
-}
-
-resource "aws_ec2_transit_gateway_route_table_propagation" "example" {
-  transit_gateway_attachment_id  = "${aws_ec2_transit_gateway_vpc_attachment.main.id}"
-  transit_gateway_route_table_id = "${aws_ec2_transit_gateway.main.association_default_route_table_id}"
-}
-
