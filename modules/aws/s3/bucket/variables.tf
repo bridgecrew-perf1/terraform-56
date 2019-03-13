@@ -3,6 +3,7 @@ variable "acl" {
   default = "private"
 }
 
+variable "policy" {}
 variable "destroy" {
   description = "The policy for retention of the bucket, default false"
   default = "false"
@@ -31,7 +32,7 @@ variable "tag_costcenter" {
   default     = ""
 }
 
-variable "tag_createdby" {
-  description = "Who created this resource"
+variable "tag_modifiedby" {
+  description = "Who modified this resource"
   default     = ""
 }

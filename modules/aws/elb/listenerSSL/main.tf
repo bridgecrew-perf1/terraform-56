@@ -3,7 +3,7 @@ terraform {
   required_version  = "> 0.11.2"
 }
 
-resource "aws_lb_listener" "mod" {
+resource "aws_lb_listener" "main" {
   load_balancer_arn = "${var.load_balancer_arn}"
   port              = "${var.port}"
   protocol          = "${var.protocol}"

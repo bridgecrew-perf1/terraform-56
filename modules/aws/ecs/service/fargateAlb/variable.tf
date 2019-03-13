@@ -1,7 +1,5 @@
 variable "name" {}
 
-variable "family" {}
-
 variable "iam_policy_path" {
   default = "/"
 }
@@ -25,6 +23,9 @@ variable "allowed_cidr" {
   default = ["0.0.0.0/0"]
 }
 
+variable "security_groups" {
+  type = "list"
+}
 variable "hport" {
   default = 80
 }
@@ -48,6 +49,8 @@ variable "network_mode" {
 variable "subnets" {
   type = "list"
 }
+
+variable "target_group_arn" {}
 
 variable "assign_public_ip" {
   default = true

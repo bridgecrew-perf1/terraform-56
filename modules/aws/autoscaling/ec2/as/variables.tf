@@ -106,6 +106,9 @@ variable "protect_from_scale_in" {
 /*
 Tags
 */
+
+variable "name" {}
+
 variable "tag_project" {
   description = "The name of the project this resource belongs to"
   default     = ""

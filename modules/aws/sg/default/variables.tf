@@ -5,24 +5,23 @@ variable "vpc_id" {
 }
 
 variable "igr_from" {
-  description = "igr_to"
-  default = ""
+  description = "igr_from"
+  default = 22
 }
 
 variable "igr_to" {
   description = "igr_to"
-  default = ""
+  default = 22
 }
 
 variable "igr_protocol" {
-  description = ""
-  default = ""
+  default = "tcp"
 }
 
 variable "igr_cidr_blocks" {
   description = ""
   type = "list"
-  default = []
+  default = ["0.0.0.0/0"]
 }
 
 variable "igr_security_groups" {
