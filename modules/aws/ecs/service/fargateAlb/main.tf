@@ -93,11 +93,11 @@ resource "aws_ecs_task_definition" "main" {
   task_role_arn = "${aws_iam_role.main.arn}"
   execution_role_arn = "${aws_iam_role.main.arn}"
   network_mode = "${var.network_mode}"
-  requires_compatibilities = ["${var.ecs_requires_compatibilities}"]
+  requires_compatibilities = ["${var.launch_type}"]
   cpu = "${var.cpu}"
   memory = "${var.memory}"
   volume {
-    name      = "${var.ecs_volume_name}"
+    name      = "${var.volume_name}"
   }
   container_definitions = "${var.container_definitions}"
   depends_on = ["aws_iam_role.main"]

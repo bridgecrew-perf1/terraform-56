@@ -42,7 +42,7 @@ resource "aws_cloudwatch_log_group" "main" {
 
 // Security Group
 resource "aws_security_group" "main" {
-  name                        = "allow_all"
+  name                        = "${var.name}-service"
   description                 = "Allow ssh inbound & all outbound traffic"
   vpc_id                      = "${var.vpc_id}"
 
@@ -50,7 +50,7 @@ resource "aws_security_group" "main" {
     from_port                 = "${var.hport}"
     to_port                   = "${var.hport}"
     protocol                  = "tcp"
-    cidr_blocks               = ["${var.allowed_cidr}"]
+    security_groups           = ["${var.security_groups}"]
   }
   egress {
     from_port                 = 0
@@ -67,7 +67,7 @@ resource "aws_security_group" "main" {
   }
 }
 
-// ECS Service and Task Definition
+// ECS Service
 resource "aws_ecs_service" "main" {
   name            = "${var.name}_service"
   cluster         = "${var.cluster}"
@@ -82,21 +82,24 @@ resource "aws_ecs_service" "main" {
   depends_on      = ["aws_ecs_task_definition.main"]
 }
 
+// ECS Task Defenition
 resource "aws_ecs_task_definition" "main" {
   family = "${var.name}_task"
   task_role_arn = "${aws_iam_role.main.arn}"
   execution_role_arn = "${aws_iam_role.main.arn}"
   network_mode = "${var.network_mode}"
-  requires_compatibilities = ["FARGATE"]
+  requires_compatibilities = ["${var.launch_type}"]
   cpu = "${var.cpu}"
   memory = "${var.memory}"
   volume {
-    name      = "dockersock"
-//    host_path = "/var/run/docker.sock"
+    name      = "${var.volume_name}"
   }
   container_definitions = "${var.container_definitions}"
   depends_on = ["aws_iam_role.main"]
 }
+
+// Autoscaling Policies Resources
+// Bellow are the resources to trigger autoscaling events and report to an email address (default)
 
 resource "aws_appautoscaling_target" "main" {
   max_capacity       = "${var.max_capacity}"
