@@ -34,7 +34,9 @@ variable "cluster" {}
 
 variable "container_definitions" {}
 
-variable "volume_name" {}
+variable "volume_name" {
+  default = "volume_1"
+}
 
 variable "desired_count" {
   default = 1
