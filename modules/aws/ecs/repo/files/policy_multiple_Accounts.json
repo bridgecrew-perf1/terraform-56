@@ -1,0 +1,40 @@
+{
+    "Version": "2008-10-17",
+    "Statement": [
+        {
+            "Sid": "AWSEcrRepoAccount",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": [
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:ListImages",
+                "ecr:DescribeImages",
+                "ecr:DescribeRepositories",
+                "ecr:PutImage",
+                "ecr:InitiateLayerUpload",
+                "ecr:UploadLayerPart",
+                "ecr:CompleteLayerUpload"
+            ]
+        },
+        {
+            "Sid": "OtherAWSAccountsRequireAccess",
+            "Effect": "Allow",
+            "Principal": {
+                [
+                    "AWS": "arn:aws:iam::<ACCOUNT_id_1>:root",
+                    "AWS": "arn:aws:iam::<ACCOUNT_id_2>:root"
+                ]
+            },
+            "Action": [
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:ListImages",
+                "ecr:DescribeImages",
+                "ecr:DescribeRepositories"
+            ]
+        }
+    ]
+}
