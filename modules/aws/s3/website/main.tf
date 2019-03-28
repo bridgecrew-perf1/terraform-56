@@ -1,6 +1,7 @@
 resource "aws_s3_bucket" "main" {
   bucket = "${var.name}"
   acl    = "${var.acl}"
+  policy = "${var.policy}"
   logging {
     target_bucket = "${var.target_bucket}"
     target_prefix = "${var.target_prefix}"

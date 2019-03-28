@@ -16,6 +16,8 @@ variable "error_document" {
   default = "404.html"
 }
 
+variable "policy" {}
+
 variable "destroy" {
   default = false
 }

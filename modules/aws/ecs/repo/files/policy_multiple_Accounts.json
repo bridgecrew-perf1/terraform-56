@@ -1,40 +1,40 @@
-{
-    "Version": "2008-10-17",
+{  
+    "Version": "2012-10-17",  
     "Statement": [
-        {
-            "Sid": "AWSEcrRepoAccount",
-            "Effect": "Allow",
-            "Principal": "*",
-            "Action": [
-                "ecr:GetDownloadUrlForLayer",
-                "ecr:BatchGetImage",
-                "ecr:BatchCheckLayerAvailability",
-                "ecr:ListImages",
-                "ecr:DescribeImages",
-                "ecr:DescribeRepositories",
-                "ecr:PutImage",
-                "ecr:InitiateLayerUpload",
-                "ecr:UploadLayerPart",
-                "ecr:CompleteLayerUpload"
-            ]
-        },
-        {
-            "Sid": "OtherAWSAccountsRequireAccess",
-            "Effect": "Allow",
-            "Principal": {
-                [
-                    "AWS": "arn:aws:iam::<ACCOUNT_id_1>:root",
-                    "AWS": "arn:aws:iam::<ACCOUNT_id_2>:root"
-                ]
-            },
-            "Action": [
-                "ecr:GetDownloadUrlForLayer",
-                "ecr:BatchGetImage",
-                "ecr:BatchCheckLayerAvailability",
-                "ecr:ListImages",
-                "ecr:DescribeImages",
-                "ecr:DescribeRepositories"
+    {
+        "Sid": "AWSEcrRepoAccount",
+        "Effect": "Allow",
+        "Action": [
+            "ecr:UploadLayerPart",
+            "ecr:PutImage",
+            "ecr:ListImages",
+            "ecr:InitiateLayerUpload",
+            "ecr:GetDownloadUrlForLayer",
+            "ecr:DescribeRepositories",
+            "ecr:DescribeImages",
+            "ecr:CompleteLayerUpload",
+            "ecr:BatchGetImage",
+            "ecr:BatchCheckLayerAvailability"
+        ],
+        "Principal": "*"
+    },
+    {
+        "Sid": "OtherAWSAccountsRequireAccess",
+        "Effect": "Allow",
+        "Action": [
+            "ecr:ListImages",
+            "ecr:GetDownloadUrlForLayer",
+            "ecr:DescribeRepositories",
+            "ecr:DescribeImages",
+            "ecr:BatchGetImage",
+            "ecr:BatchCheckLayerAvailability"
+        ],
+        "Principal": {
+            "AWS": [
+                "arn:aws:iam::<account-id-A>:root",
+                "arn:aws:iam::<account-id-B>:root"
             ]
         }
+    }
     ]
 }
