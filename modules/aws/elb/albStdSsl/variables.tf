@@ -1,5 +1,67 @@
 variable "name" {}
 
+// Security Group
+
+variable "igr_from_1" {
+  description = "igr_from"
+  default = 80
+}
+
+variable "igr_to_1" {
+  description = "igr_to"
+  default = 80
+}
+
+variable "igr_from_2" {
+  description = "igr_from"
+  default = 443
+}
+
+variable "igr_to_2" {
+  description = "igr_to"
+  default = 443
+}
+
+variable "igr_protocol" {
+  default = "tcp"
+}
+
+variable "igr_cidr_blocks" {
+  description = ""
+  type = "list"
+  default = ["0.0.0.0/0"]
+}
+
+variable "igr_security_groups" {
+  description = ""
+  type = "list"
+  default = []
+}
+
+variable "egr_from" {
+  default = 0
+}
+
+variable "egr_to" {
+  default = 0
+}
+
+variable "egr_protocol" {
+  default = "-1"
+}
+
+variable "egr_cidr_blocks" {
+  type = "list"
+  default = ["0.0.0.0/0"]
+}
+
+variable "egr_security_groups" {
+  description = ""
+  type = "list"
+  default = []
+}
+
+// ALB
 variable "alb_internal" {
   description = "Boolean, set the type of ip for the LB"
   default = "false"
@@ -147,6 +209,9 @@ variable "target_type" {
   description = " The type of target, can be instance or ip"
   default = "instance"
 }
+
+variable "fqdn" {}
+
 /*
 Tags
 */
@@ -170,3 +235,4 @@ variable "tag_createdby" {
   description = "Who created this resource"
   default     = ""
 }
+

@@ -3,11 +3,46 @@ terraform {
   required_version  = "> 0.11.2"
 }
 
+resource "aws_security_group" "main" {
+  name                        = "${var.name}_alb"
+  description                 = "${var.name} Security Group"
+  vpc_id                      = "${var.vpc_id}"
+
+  ingress {
+    from_port                 = "${var.igr_from_1}"
+    to_port                   = "${var.igr_to_1}"
+    protocol                  = "${var.igr_protocol}"
+    cidr_blocks               = ["${var.igr_cidr_blocks}"]
+    security_groups           = ["${var.igr_security_groups}"]
+  }
+  ingress {
+    from_port                 = "${var.igr_from_2}"
+    to_port                   = "${var.igr_to_2}"
+    protocol                  = "${var.igr_protocol}"
+    cidr_blocks               = ["${var.igr_cidr_blocks}"]
+    security_groups           = ["${var.igr_security_groups}"]
+  }
+  egress {
+    from_port                 = "${var.egr_from}"
+    to_port                   = "${var.egr_to}"
+    protocol                  = "${var.egr_protocol}"
+    cidr_blocks               = ["${var.egr_cidr_blocks}"]
+    security_groups           = ["${var.egr_security_groups}"]
+  }
+  tags {
+    Name                       = "${var.name}"
+    Project                    = "${var.tag_project}"
+    Environment                = "${var.tag_env}"
+    awsCostCenter              = "${var.tag_costcenter}"
+    CreatedBy                  = "${var.tag_createdby}"
+  }
+}
+
 resource "aws_lb" "main" {
   name                        = "${var.name}"
   internal                    = "${var.alb_internal}"
   load_balancer_type          = "${var.load_balancer_type}"
-  security_groups             = ["${var.alb_security_groups}"]
+  security_groups             = ["${aws_security_group.main.id}"]
   subnets                     = ["${var.alb_subnets}"]
   enable_deletion_protection  = "${var.alb_enable_deletion_protection}"
   access_logs {
@@ -57,7 +92,23 @@ resource "aws_lb_target_group" "main" {
   depends_on = ["aws_lb.main"]
 }
 
-resource "aws_lb_listener" "main" {
+
+resource "aws_lb_listener" "http" {
+  load_balancer_arn = "${aws_lb.main.arn}"
+  port = "80"
+  protocol = "HTTP"
+  default_action {
+    type = "redirect"
+    redirect {
+      port = "443"
+      protocol = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+  depends_on = ["aws_lb.main"]
+}
+
+resource "aws_lb_listener" "https" {
   load_balancer_arn = "${aws_lb.main.arn}"
   port              = "${var.listener_port}"
   protocol          = "${var.listener_protocol}"

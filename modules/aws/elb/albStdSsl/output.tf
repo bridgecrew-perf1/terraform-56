@@ -1,3 +1,9 @@
+// Security Group
+output "sg_id" {
+  value = "${aws_security_group.main.id}"
+}
+
+// ALB
 output "alb_id" {
   value = "${aws_lb.main.id}"
 }
@@ -24,11 +30,11 @@ output "alb_zone_id" {
 
 // Listener SSL
 output "listener_id" {
-  value = "${aws_lb_listener.main.id}"
+  value = "${aws_lb_listener.https.id}"
 }
 
 output "listener_arn" {
-  value = "${aws_lb_listener.main.arn}"
+  value = "${aws_lb_listener.https.arn}"
 }
 
 // Target Group
