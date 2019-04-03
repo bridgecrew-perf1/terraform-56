@@ -1,8 +1,4 @@
-/*
-
-Cloudtrail s3 bucket policy
-
-*/
+//Cloudtrail s3 bucket policy
 
 data "aws_iam_policy_document" "bucket" {
   statement {
@@ -27,11 +23,7 @@ data "aws_iam_policy_document" "bucket" {
   }
 }
 
-/*
-
-Cloudtrail kms key policy
-
-*/
+//Cloudtrail kms key policy
 
 data "aws_iam_policy_document" "kms" {
   statement {
@@ -132,11 +124,10 @@ data "aws_iam_policy_document" "kms" {
   }
 }
 
-/*
 
-Cloudtrail s3 bucket IAM policy for replication
 
-*/
+//Cloudtrail s3 bucket IAM policy for replication
+
 data "aws_iam_policy_document" "assume_replication" {
   statement {
     sid = "sts"
@@ -209,7 +200,7 @@ data "aws_iam_policy_document" "replication" {
     sid = "DestinationEncrypt"
     effect = "Allow"
     actions = ["kms:Encrypt"]
-    resources = ["${var.s3_destination_kms_key_arn}"]
+    resources = ["${var.s3_destination_kms_key_id}"]
     condition {
       test = "StringLike"
       values = ["s3.${var.s3_destination_region}.amazonaws.com"]

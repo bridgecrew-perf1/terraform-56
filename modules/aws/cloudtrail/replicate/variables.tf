@@ -76,8 +76,6 @@ variable "s3_destination_bucket_arn" {}
 
 variable "s3_destination_kms_key_id" {}
 
-variable "s3_destination_kms_key_arn" {}
-
 variable "s3_destination_region" {}
 
 variable "storage_class" {
