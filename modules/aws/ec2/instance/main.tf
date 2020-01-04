@@ -20,11 +20,9 @@ resource "aws_instance" "main" {
     volume_type                 = "${var.volume_type}"
     volume_size                 = "${var.volume_size}"
   }
-  tags {
-    Name                        = "${var.name}"
-    Project                     = "${var.tag_project}"
-    Environment                 = "${var.tag_env}"
-    awsCostCenter               = "${var.tag_costcenter}"
-    CreatedBy                   = "${var.tag_createdby}"
-  }
+  tags = "${merge(map(
+    "Name", "${var.name}",
+    "Environment", "${var.tag_env}"),
+    var.other_tags
+  )}"
 }

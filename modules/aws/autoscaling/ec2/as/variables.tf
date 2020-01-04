@@ -107,10 +107,8 @@ variable "protect_from_scale_in" {
 Tags
 */
 
-variable "name" {}
-
-variable "tag_project" {
-  description = "The name of the project this resource belongs to"
+variable "name" {
+  description = "Input the name of stack"
   default     = ""
 }
 
@@ -119,12 +117,8 @@ variable "tag_env" {
   default     = ""
 }
 
-variable "tag_costcenter" {
-  description = "The cost center"
-  default     = ""
-}
-
-variable "tag_createdby" {
-  description = "Who created this resource"
-  default     = ""
+variable "other_tags" {
+  description = "For adding an additional values for tags"
+  type = "map"
+  default = {}
 }

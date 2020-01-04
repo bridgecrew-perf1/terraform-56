@@ -24,14 +24,11 @@ resource "aws_lb_target_group" "mod" {
     unhealthy_threshold = "${var.health_check_unhealthy_threshold}"
     matcher = "${var.health_check_matcher}"
   }
-  target_type = "${var.target_type}" 
-  tags {
-    Name                       = "${var.name}"
-    Project                    = "${var.tag_project}"
-    Environment                = "${var.tag_env}"
-    awsCostCenter              = "${var.tag_costcenter}"
-    CreatedBy                  = "${var.tag_createdby}"
-    Alb                        = "${var.tag_alb}"
-  }
+  target_type = "${var.target_type}"
+  tags = "${merge(map(
+    "Name", "${var.name}",
+    "Environment", "${var.tag_env}"),
+    "Alb", "${var.tag_alb}",
+    var.other_tags
+  )}"
 }
-

@@ -4,10 +4,16 @@ variable "lifecycle" { description = "The lifecycle policy for yor ecr" }
 
 variable "policy" { description = "The access policy for this repo" }
 
-variable "tag_project" {}
+variable "image_tag_mutability" { default = "IMMUTABLE" }
 
-variable "env" {}
+variable "scan_on_push" { default = true }
+variable "tag_env" {
+  description = "The environemnt this resource is being deployed to"
+  default     = ""
+}
 
-variable "tag_costcenter" {}
-
-variable "tag_modifiedby" {}
+variable "other_tags" {
+  description = "For adding an additional values for tags"
+  type = "map"
+  default = {}
+}

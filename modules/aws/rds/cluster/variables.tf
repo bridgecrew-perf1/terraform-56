@@ -87,11 +87,35 @@ variable "engine_version" {
 }
 
 variable "skip_final_snapshot" {
-  description = "Boll. for the snapshot, on PROD should always be set to false"
+  description = "Bool. for the snapshot, on PROD should always be set to false"
   default = ""
 }
 
 variable "final_snapshot_identifier" {
   description = "The name for the final snapshot"
   default = ""
+}
+
+variable "copy_tags_to_snapshot" {
+  description = "Copy all Cluster tags to snapshots. Default is false"
+  default = "false"
+}
+
+variable "deletion_protection" {
+  description = "(Optional) If the DB instance should have deletion protection enabled. The database can't be deleted when this value is set to true."
+  default = true
+}
+
+/*
+Tags
+*/
+variable "tag_env" {
+  description = "The environemnt this resource is being deployed to"
+  default     = ""
+}
+
+variable "other_tags" {
+  description = "For adding an additional values for tags"
+  type = "map"
+  default = {}
 }

@@ -22,11 +22,9 @@ resource "aws_cloudtrail" "main" {
   #   }
   # }
   }
-  tags {
-    Name                       = "${var.name}"
-    Project                    = "${var.tag_project}"
-    Environment                = "${var.tag_env}"
-    awsCostCenter              = "${var.tag_costcenter}"
-    CreatedBy                  = "${var.tag_createdby}"
-  }
+  tags = "${merge(map(
+    "Name", "${var.name}",
+    "Environment", "${var.tag_env}"),
+    var.other_tags
+  )}"
 }

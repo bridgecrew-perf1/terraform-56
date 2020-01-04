@@ -13,7 +13,7 @@
                     [ "AWS/ECS", "MemoryReservation", "ClusterName", "${cluster_name}" ],
                     [ ".", "MemoryUtilization", ".", "." ]
                 ],
-                "region": "eu-west-1",
+                "region": "${region}",
                 "title": "ECS MEM Usage Units"
             }
         },
@@ -30,7 +30,7 @@
                     [ "AWS/ECS", "CPUReservation", "ClusterName", "${cluster_name}" ],
                     [ ".", "CPUUtilization", ".", "." ]
                 ],
-                "region": "eu-west-1",
+                "region": "${region}",
                 "title": "ECS CPU Usage Units"
             }
         },
@@ -46,7 +46,7 @@
                 "metrics": [
                     [ "AWS/EC2", "CPUUtilization", "AutoScalingGroupName", "${cluster_name}" ]
                 ],
-                "region": "eu-west-1",
+                "region": "${region}",
                 "title": "ASG CPU Usage %"
             }
         },
@@ -63,7 +63,7 @@
                     [ "AWS/EC2", "EBSReadOps", "AutoScalingGroupName", "${cluster_name}" ],
                     [ ".", "EBSWriteOps", ".", "." ]
                 ],
-                "region": "eu-west-1",
+                "region": "${region}",
                 "title": "ASG EBS Writes Ops"
             }
         },
@@ -80,7 +80,7 @@
                     [ "AWS/EC2", "EBSReadBytes", "AutoScalingGroupName", "${cluster_name}" ],
                     [ ".", "EBSWriteBytes", ".", "." ]
                 ],
-                "region": "eu-west-1",
+                "region": "${region}",
                 "title": "ASG EBS Writes Bytes",
                 "period": 300
             }

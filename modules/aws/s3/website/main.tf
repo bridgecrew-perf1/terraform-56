@@ -17,11 +17,9 @@ resource "aws_s3_bucket" "main" {
     error_document = "${var.error_document}"
   }
   force_destroy = "${var.destroy}"
-  tags {
-    Name                       = "${var.name}"
-    Project                    = "${var.tag_project}"
-    Environment                = "${var.tag_env}"
-    awsCostCenter              = "${var.tag_costcenter}"
-    CreatedBy                  = "${var.tag_createdby}"
-  }
+  tags = "${merge(map(
+    "Name", "${var.name}",
+    "Environment", "${var.tag_env}"),
+    var.other_tags
+  )}"
 }

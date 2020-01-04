@@ -50,21 +50,35 @@ variable "s3_expirition_days" {
   default = 365 # 1 years
 }
 
-variable "s3_source_account_resource_arn" {
-  description = "The ARN allowed to access this bucket form the source account"
+//variable "s3_source_account_resource_arn" {
+//  description = "The ARN allowed to access this bucket form the source account"
+//}
+variable "s3_source_account" {
+  type = "list"
 }
-variable "s3_source_account" {}
+
+variable "s3_source_account_root" {
+  type = "list"
+}
+
+variable "s3_source_account_id" {
+  type = "list"
+}
 
 variable "s3_force_destroy" {
   default = false
 }
 
 // Tags
-variable "tag_project" {}
+variable "tag_env" {
+  description = "The environemnt this resource is being deployed to"
+  default     = ""
+}
 
-variable "env" {}
+variable "other_tags" {
+  description = "For adding an additional values for tags"
+  type = "map"
+  default = {}
+}
 
-variable "tag_costcenter" {}
-
-variable "tag_modifiedby" {}
 

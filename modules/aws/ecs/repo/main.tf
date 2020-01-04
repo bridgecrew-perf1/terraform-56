@@ -1,12 +1,14 @@
 resource "aws_ecr_repository" "main" {
   name = "${var.name}"
-  tags = {
-    Name = "${var.name}"
-    Project = "${var.tag_project}"
-    Environment = "${var.env}"
-    awsCostCenter = "${var.tag_costcenter}"
-    ModifiedBy = "${var.tag_modifiedby}"
+  image_tag_mutability = "${var.image_tag_mutability}"
+  image_scanning_configuration {
+    scan_on_push = "${var.scan_on_push}"
   }
+  tags = "${merge(map(
+    "Name", "${var.name}",
+    "Environment", "${var.tag_env}"),
+    var.other_tags
+  )}"
 }
 
 resource "aws_ecr_lifecycle_policy" "main" {

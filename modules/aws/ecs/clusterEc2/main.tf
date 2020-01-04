@@ -5,37 +5,39 @@ terraform {
 // Cloudwatch resources
 resource "aws_cloudwatch_log_group" "main" {
   name = "/aws/ecs/${var.name}"
-  tags {
-    Name = "${var.name}"
-    Project = "${var.tag_project}"
-    Environment = "${var.env}"
-    awsCostCenter = "${var.tag_costcenter}"
-    ModifiedBy = "${var.tag_modifiedby}"
-  }
+  tags = "${merge(map(
+    "Name", "${var.name}",
+    "Environment", "${var.tag_env}"),
+    var.other_tags
+  )}"
 }
 
 // ECS resources
 resource "aws_ecs_cluster" "main" {
   name = "${var.name}"
-  tags = {
-    Name = "${var.name}"
-    Project = "${var.tag_project}"
-    Environment = "${var.env}"
-    awsCostCenter = "${var.tag_costcenter}"
-    ModifiedBy = "${var.tag_modifiedby}"
-  }
+  tags = "${merge(map(
+    "Name", "${var.name}",
+    "Environment", "${var.tag_env}"),
+    var.other_tags
+  )}"
 }
 /*
 Autoscaling resources
 */
-
 // Auto generate ssh key
 /*
-For demo purposes it's ok to store the ssh key on the state file.
+Both Private and Public keys for the ec2-user will be stored on the state file.
+Either you check the state file to git or store it on S3 or both this isn't a good
+practice from a security standpoint, but, extremly pratical from a terraform module
+operational application.
 
-Any Dev => PROD/LIVE, etc... systems remove the key from the server through the
-Launch Template userdata by deleting the ec2-user and taking steps to
-create new ssh user(s).
+Proposed solution:
+1) Remove the ec2-user after startup (by default), but allow for behaviour override with
+variable 'admin_remove = false'
+2) Push the secure logs to cloudwatch
+3) Use a combination of config and secrets buckets to manage ssh access allowing you to decide
+Who has access to which type of services, mode detail on this to follow in a README.md
+
 */
 resource "tls_private_key" "main" {
   algorithm = "${var.algorithm}"
@@ -50,14 +52,15 @@ resource "aws_key_pair" "main" {
 
 // IAM Profile
 resource "aws_iam_instance_profile" "main" {
-  name = "${var.name}_iam_role"
+  name = "${var.name}_instance_profile"
   path = "/${var.env}/ecs/"
   role = "${aws_iam_role.main.name}"
+  depends_on = ["aws_iam_role.main"]
 }
 
 resource "aws_iam_role" "main" {
   description = "${var.name} ECS Cluster IAM Role"
-  name = "${var.name}.iam_role"
+  name = "${var.name}_iam_role"
   path = "/${var.env}/ecs/"
   assume_role_policy = "${data.aws_iam_policy_document.assume_role.json}"
 }
@@ -84,28 +87,23 @@ resource "aws_security_group" "main" {
     from_port = "${var.igr_from}"
     to_port = "${var.igr_to}"
     protocol = "${var.igr_protocol}"
-    cidr_blocks = [
-      "${var.igr_cidr_blocks}"]
-    security_groups = [
-      "${var.igr_security_groups}"]
+    cidr_blocks = ["${var.igr_cidr_blocks}"]
+//    security_groups = [
+//      "${var.igr_security_groups}"]
   }
   egress {
     from_port = 0
     to_port = 0
     protocol = "-1"
-    cidr_blocks = [
-      "0.0.0.0/0"]
-    security_groups = [
-      "${var.egr_security_groups}"]
+    cidr_blocks = ["0.0.0.0/0"]
+//    security_groups = [
+//      "${var.egr_security_groups}"]
   }
-  tags {
-    Name = "${var.name}"
-    Project = "${var.tag_project}"
-    Environment = "${var.env}"
-    awsCostCenter = "${var.tag_costcenter}"
-    ModifiedBy = "${var.tag_modifiedby}"
-
-  }
+  tags = "${merge(map(
+    "Name", "${var.name}",
+    "Environment", "${var.tag_env}"),
+    var.other_tags
+  )}"
 }
 
 // ASG resources
@@ -127,33 +125,6 @@ resource "aws_autoscaling_group" "main" {
     "${var.enabled_metrics}"]
   wait_for_capacity_timeout = "${var.wait_for_capacity_timeout}"
   protect_from_scale_in = "${var.protect_from_scale_in}"
-  tags = [
-    {
-      key = "Name"
-      value = "${var.name}"
-      propagate_at_launch = true
-    },
-    {
-      key = "Project"
-      value = "${var.tag_project}"
-      propagate_at_launch = true
-    },
-    {
-      key = "Environment"
-      value = "${var.env}"
-      propagate_at_launch = true
-    },
-    {
-      key = "CostCenter"
-      value = "${var.tag_costcenter}"
-      propagate_at_launch = true
-    },
-    {
-      key = "ModifedBy"
-      value = "${var.tag_modifiedby}"
-      propagate_at_launch = true
-    }
-  ]
 }
 
 // Launch Template
@@ -167,6 +138,8 @@ resource "aws_launch_template" "main" {
       volume_size = "${var.volume_size_root}"
       volume_type = "${var.volume_type_root}"
       delete_on_termination = "${var.delete_on_termination_root}"
+      encrypted = "${var.ebs_encrypted}"
+      kms_key_id = "${var.ebs_kms_key_id}"
     }
   }
   block_device_mappings {
@@ -176,7 +149,8 @@ resource "aws_launch_template" "main" {
       volume_size = "${var.volume_size_ecs}"
       volume_type = "${var.volume_type_ecs}"
       delete_on_termination = "${var.delete_on_termination_ecs}"
-      encrypted = "${var.encrypted_ecs}"
+      encrypted = "${var.ebs_encrypted}"
+      kms_key_id = "${var.ebs_kms_key_id}"
     }
   }
   ebs_optimized = "${var.ebs_optimized}"
@@ -195,15 +169,29 @@ resource "aws_launch_template" "main" {
     delete_on_termination = "${var.delete_on_termination}"
     security_groups = ["${aws_security_group.main.id}"]
   }
-  tags = {
-    Name = "${var.name}"
-    Project = "${var.tag_project}"
-    Environment = "${var.env}"
-    awsCostCenter = "${var.tag_costcenter}"
-    ModifiedBy = "${var.tag_modifiedby}"
-
+  tags = "${merge(map(
+    "Name", "${var.name}",
+    "Environment", "${var.tag_env}"),
+    var.other_tags
+  )}"
+  tag_specifications {
+    resource_type = "instance"
+    tags = "${merge(map(
+        "Name", "${var.name}",
+        "Environment", "${var.tag_env}"),
+        var.other_tags
+    )}"
   }
-  user_data = "${base64encode(data.template_file.user_data.rendered)}"
+  tag_specifications {
+    resource_type = "volume"
+    tags = "${merge(map(
+        "Name", "${var.name}",
+        "Environment", "${var.tag_env}"),
+        var.other_tags
+    )}"
+  }
+  user_data = "${data.template_cloudinit_config.config.rendered}"
+  depends_on = ["aws_iam_instance_profile.main"]
 }
 
 // Autoscaling Policies Resources
@@ -261,21 +249,12 @@ The sns subscription must be manually created, the decision to
 do so is because of of TF limitation in using "email" as protocol
 for the sns subscription resource.
 */
-resource "aws_sns_topic" "main" {
-  count = "${var.sns_enabled == true ? 1 : 0}"
-  name = "${var.name}-topic"
-  display_name = "${var.name}-topic"
-}
 
 resource "aws_autoscaling_notification" "main" {
   count = "${var.sns_enabled == true ? 1 : 0}"
   group_names = ["${var.name}"]
   notifications = ["${var.sns_notifications}"]
-  topic_arn = "${aws_sns_topic.main.arn}"
-  depends_on = [
-    "aws_autoscaling_group.main",
-    "aws_sns_topic.main"
-  ]
+  topic_arn = "${var.sns_topic_arn}"
 }
 
 

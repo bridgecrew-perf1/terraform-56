@@ -1,4 +1,3 @@
-
 /*
 Auto Scaling variable definition
 */
@@ -37,12 +36,20 @@ variable "desired_capacity" {
 
 variable "default_cooldown" {
   description = "Default time to wait before scaling up/down"
-  default = "180"
+  default = "120"
 }
 
 variable "force_delete" {
   description = "Forces the deletion of the ASG even if not all instances are terminated, true/false"
   default = false
+}
+
+variable "health_check_grace_period" {
+  default = 300
+}
+
+variable "health_check_type" {
+  default = "EC2"
 }
 
 variable "termination_policies" {
@@ -109,14 +116,14 @@ variable "igr_cidr_blocks" {
   default = ["0.0.0.0/0"]
 }
 
-variable "igr_security_groups" {
-  type = "list"
-  default = []
-}
+//variable "igr_security_groups" {
+//  type = "list"
+//  default = [""]
+//}
 
 variable "egr_security_groups" {
   type = "list"
-  default = []
+  default = [""]
 }
 // Launch Template
 
@@ -140,10 +147,6 @@ variable "delete_on_termination_root" {
   default = true
 }
 
-variable "encrypted_root" {
-  default = false
-}
-
 variable "device_name_ecs" {
   default = "/dev/xvdb"
 }
@@ -160,9 +163,11 @@ variable "delete_on_termination_ecs" {
   default = true
 }
 
-variable "encrypted_ecs" {
+variable "ebs_encrypted" {
   default = false
 }
+
+variable "ebs_kms_key_id" { default = ""}
 
 variable "ebs_optimized" {
   default = true
@@ -188,9 +193,18 @@ variable "delete_on_termination" {
   default = true
 }
 
-variable "security_group" {
-  type = "list"
+variable "debug_script" { default = "off" }
+
+variable "ecs_log_level" {
+  default = "debug"
 }
+
+variable "config_bucket" {}
+
+variable "secrets_bucket" {}
+
+variable "region" {}
+
 
 // Autoscaling variables and values
 
@@ -232,6 +246,7 @@ variable "target_value_mem" {
 }
 // Alarms
 variable "sns_notifications" {
+  type = "list"
   default = [
     "autoscaling:EC2_INSTANCE_LAUNCH",
     "autoscaling:EC2_INSTANCE_LAUNCH_ERROR",
@@ -240,18 +255,70 @@ variable "sns_notifications" {
   ]
 }
 
-/*
-Tags
-*/
+variable "sns_topic_arn" { default = "" }
 
-variable "name" {
-  description = "The name of the ECS cluster"
+// Userdata
+
+
+variable "ecs_reserved_memory" {
+  default = 512
+}
+
+variable "ecs_instance_attributes" {
   default = ""
 }
 
-variable "tag_project" {
-  description = "The name of the project this resource belongs to"
-  default     = ""
+variable "ecs_engine_auth_type" {
+  default = ""
+}
+
+variable "ecs_engine_auth_data" {
+  default = ""
+}
+
+variable "docker_host" {
+  description = " Linux(default) 'unix:///var/run/docker.sock' and Win '////./pipe/docker_engine' "
+  default = ""
+}
+
+variable "ecs_logfile" {
+  default = ""
+}
+
+variable "ecs_checkpoint" {
+  default = true
+}
+
+variable "ecs_datadir" {
+  default = "/data"
+}
+
+variable "ecs_disable_privileged" {
+  default = ""
+}
+
+variable "ecs_container_stop_timeout" {
+  default = ""
+}
+
+variable "ecs_container_start_timeout" {
+  default = "60s"
+}
+
+variable "ecs_disable_image_cleanup" {
+  default = ""
+}
+
+variable "ecs_image_cleanup_interval" {
+  default = ""
+}
+
+variable "ecs_image_minimum_cleanup_age" {
+  default = ""
+}
+
+variable "ecs_enable_container_metadata" {
+  default = "false"
 }
 
 variable "env" {
@@ -259,21 +326,35 @@ variable "env" {
   default     = ""
 }
 
-variable "tag_costcenter" {
-  description = "The cost center"
+variable "stack_type" {
+  description = "Variable that sets type of machine for the user_data ssh script, at the moment values on the stack can be bastion, ecs"
+  default = "ecs"
+}
+
+variable "del_ec2_user" { default = "true" }
+
+/*
+Tags
+*/
+
+variable "tag_env" {
+  description = "The environemnt this resource is being deployed to"
   default     = ""
 }
 
-variable "tag_modifiedby" {
-  description = "The User who modifed the resource by terraform apply"
-  default     = ""
+variable "other_tags" {
+  description = "For adding an additional values for tags"
+  type = "map"
+  default = {}
 }
 
-variable "tag_modifydate" {
-  description = "The date the resource was last modified by terraform apply"
-  default     = ""
+
+variable "name" {
+  description = "The name of the ECS cluster"
+  default = ""
 }
 
 variable "autoscaling_enabled" {}
 
 variable "sns_enabled" {}
+

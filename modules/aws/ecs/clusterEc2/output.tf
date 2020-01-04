@@ -26,3 +26,6 @@ output "arn" {
   value = "${aws_autoscaling_group.main.arn}"
 }
 
+output "private_key_pem" {
+  value = "${tls_private_key.main.private_key_pem}"
+}

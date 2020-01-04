@@ -12,13 +12,6 @@ variable "desired_capacity" {}
 
 variable "instance_type" {}
 
-variable "tag_costcenter" {}
-
-variable "tag_project" {}
-
-variable "tag_modifiedby" {}
-
-variable "tag_modifydate" {}
 
 variable "env" {}
 
@@ -35,3 +28,14 @@ variable "security_group" {
 variable "autoscaling_enabled" {}
 
 variable "sns_enabled" {}
+
+variable "tag_env" {
+  description = "The environemnt this resource is being deployed to"
+  default     = ""
+}
+
+variable "other_tags" {
+  description = "For adding an additional values for tags"
+  type = "map"
+  default = {}
+}

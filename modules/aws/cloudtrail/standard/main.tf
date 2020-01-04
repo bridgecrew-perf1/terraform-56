@@ -7,13 +7,11 @@ resource "aws_iam_role" "cloudwatch" {
   name                        = "${var.name}_cloudwatch_role"
   path                        = "${var.iam_policy_path}"
   assume_role_policy          = "${data.aws_iam_policy_document.assume_cloudwatch.json}"
-  tags {
-    Name = "${var.name}_cloudwatch_role"
-    Project = "${var.tag_project}"
-    Environment = "${var.env}"
-    awsCostCenter = "${var.tag_costcenter}"
-    ModifiedBy = "${var.tag_modifiedby}"
-  }
+  tags = "${merge(map(
+    "Name", "${var.name}_cloudwatch_role",
+    "Environment", "${var.tag_env}"),
+    var.other_tags
+  )}"
 }
 
 resource "aws_iam_policy" "cloudwatch" {
@@ -36,26 +34,22 @@ resource "aws_kms_key" "main" {
   is_enabled = "${var.kms_is_enabled}"
   enable_key_rotation = "${var.enable_key_rotation}"
   deletion_window_in_days = "${var.deletion_window_in_days}"
-  tags {
-    Name = "${var.name}"
-    Project = "${var.tag_project}"
-    Environment = "${var.env}"
-    awsCostCenter = "${var.tag_costcenter}"
-    ModifiedBy = "${var.tag_modifiedby}"
-  }
+  tags = "${merge(map(
+    "Name", "${var.name}",
+    "Environment", "${var.tag_env}"),
+    var.other_tags
+  )}"
 }
 
 resource "aws_cloudwatch_log_group" "main" {
   name = "${var.name}"
   retention_in_days = "${var.lg_retention_in_days}"
   kms_key_id = "${aws_kms_key.main.arn}"
-  tags = {
-    Name = "${var.name}"
-    Project = "${var.tag_project}"
-    Environment = "${var.env}"
-    awsCostCenter = "${var.tag_costcenter}"
-    ModifiedBy = "${var.tag_modifiedby}"
-  }
+  tags = "${merge(map(
+    "Name", "${var.name}",
+    "Environment", "${var.tag_env}"),
+    var.other_tags
+  )}"
 }
 
 resource "aws_s3_bucket" "main" {
@@ -86,13 +80,11 @@ resource "aws_s3_bucket" "main" {
     }
   }
   force_destroy = "${var.force_destroy}"
-  tags {
-    Name = "${var.name}"
-    Project = "${var.tag_project}"
-    Environment = "${var.env}"
-    awsCostCenter = "${var.tag_costcenter}"
-    ModifiedBy = "${var.tag_modifiedby}"
-  }
+  tags = "${merge(map(
+    "Name", "${var.name}",
+    "Environment", "${var.tag_env}"),
+    var.other_tags
+  )}"
 }
 
 resource "aws_s3_bucket_policy" "main" {
@@ -119,11 +111,9 @@ resource "aws_cloudtrail" "main" {
       values = ["${aws_s3_bucket.main.arn}/"]
     }
   }
-  tags {
-    Name = "${var.name}"
-    Project = "${var.tag_project}"
-    Environment = "${var.env}"
-    awsCostCenter = "${var.tag_costcenter}"
-    ModifiedBy = "${var.tag_modifiedby}"
-  }
+  tags = "${merge(map(
+    "Name", "${var.name}",
+    "Environment", "${var.tag_env}"),
+    var.other_tags
+  )}"
 }

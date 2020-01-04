@@ -3,10 +3,13 @@ variable "name" {
   default = ""
 }
 
-variable "tag_project" {}
+variable "tag_env" {
+  description = "The environemnt this resource is being deployed to"
+  default     = ""
+}
 
-variable "env" {}
-
-variable "tag_costcenter" {}
-
-variable "tag_modifiedby" {}
+variable "other_tags" {
+  description = "For adding an additional values for tags"
+  type = "map"
+  default = {}
+}

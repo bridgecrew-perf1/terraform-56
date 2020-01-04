@@ -10,13 +10,15 @@ resource "aws_kms_key" "main" {
   is_enabled = "${var.kms_is_enabled}"
   enable_key_rotation = "${var.kms_enable_key_rotation}"
   deletion_window_in_days = "${var.kms_deletion_window_in_days}"
-  tags {
-    Name = "${var.name}"
-    Project = "${var.tag_project}"
-    Environment = "${var.env}"
-    awsCostCenter = "${var.tag_costcenter}"
-    ModifiedBy = "${var.tag_modifiedby}"
-  }
+  tags = "${merge(map(
+    "Name", "${var.name}",
+    "Environment", "${var.tag_env}"),
+    var.other_tags
+  )}"
+}
+resource "aws_kms_alias" "main" {
+  target_key_id = "${aws_kms_key.main.id}"
+  name = "alias/${var.name}"
 }
 
 resource "aws_s3_bucket" "main" {
@@ -47,13 +49,11 @@ resource "aws_s3_bucket" "main" {
     }
   }
   force_destroy = "${var.s3_force_destroy}"
-  tags {
-    Name = "${var.name}"
-    Project = "${var.tag_project}"
-    Environment = "${var.env}"
-    awsCostCenter = "${var.tag_costcenter}"
-    ModifiedBy = "${var.tag_modifiedby}"
-  }
+  tags = "${merge(map(
+    "Name", "${var.name}",
+    "Environment", "${var.tag_env}"),
+    var.other_tags
+  )}"
 }
 
 resource "aws_s3_bucket_policy" "main" {

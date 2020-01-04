@@ -1,3 +1,7 @@
+terraform {
+  required_version  = "~> 0.11.12"
+}
+
 resource "aws_rds_cluster" "main" {
   cluster_identifier                  = "${var.name}"
   availability_zones                  = ["${var.availability_zones}"]
@@ -17,5 +21,12 @@ resource "aws_rds_cluster" "main" {
   engine                              = "${var.engine}"
   engine_version                      = "${var.engine_version}"
   skip_final_snapshot                 = "${var.skip_final_snapshot}"
-  final_snapshot_identifier           = "${var.final_snapshot_identifier}"
+  copy_tags_to_snapshot               = "${var.copy_tags_to_snapshot}"
+  deletion_protection                 = "${var.deletion_protection}"
+  //final_snapshot_identifier           = "${var.final_snapshot_identifier}"
+  tags = "${merge(map(
+    "Name", "${var.name}",
+    "Environment", "${var.tag_env}"),
+    var.other_tags
+  )}"
 }

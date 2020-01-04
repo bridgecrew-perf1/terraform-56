@@ -32,10 +32,11 @@ module "ecs" {
   min_size = "${var.min_size}"
   max_size = "${var.max_size}"
   desired_capacity = "${var.desired_capacity}"
-  tag_costcenter = "${var.tag_costcenter}"
-  tag_project = "${var.tag_project}"
-  tag_modifiedby = "${data.aws_caller_identity.current.arn}"
-  tag_modifydate = "${data.aws_caller_identity.current.id}"
+  tags = "${merge(map(
+    "Name", "${var.name}",
+    "Environment", "${var.tag_env}"),
+    var.other_tags
+  )}"
   env = "${var.env}"
 // account = "${var.account}"
   vpc_zone_identifier = ["${var.vpc_zone_identifier}"]

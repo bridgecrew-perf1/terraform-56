@@ -1,19 +1,20 @@
-variable "name" {
-  description = "Name of the Role and Policy"
-  default = ""
+variable "name" {}
+
+variable "iam_path" { default = "/" }
+
+variable "iam_policy_doc" { default = "" }
+
+variable "assume_role_policy" { default = "" }
+
+variable "tag_env" {
+  description = "The environemnt this resource is being deployed to"
+  default     = ""
 }
 
-variable "iam_policy_path" {
-  description = "IAM policy doc for permissions"
-  default = "/"
+variable "other_tags" {
+  description = "For adding an additional values for tags"
+  type = "map"
+  default = {}
 }
 
-variable "iam_policy_doc" {
-  description = "policy document"
-  default = ""
-}
-
-variable "assume_role_policy" {
-  description = "Service assume role policy document"
-  default = ""
-}
+variable "iam_ip_enabled" { default = false }

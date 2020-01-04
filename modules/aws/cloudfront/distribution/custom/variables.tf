@@ -5,26 +5,24 @@ variable "aliases" {
   default = []
 }
 
-variable "ordered_cache_behavior" {
-  type = "list"
-  default = []
-}
+variable "comment" { default = "" }
 
-variable "comment" {}
+variable "custom_error_response_error_code" { default = 0 }
 
-variable "custom_error_response" {
-  type = "list"
-  default = []
-}
+variable "custom_error_response_error_caching_min_ttl" { default = 15 }
+
+variable "custom_error_response_response_code" { default = 404 }
+
+variable "custom_error_response_response_page_path" { default = "/custom_404.html"}
 
 variable "default_allowed_methods" {
   type = "list"
-  default = ["HEAD", "GET", "OPTIONS"]
+  default = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
 }
 
 variable "default_cached_methods" {
   type = "list"
-  default = ["HEAD", "GET"]
+  default = ["HEAD", "GET", "OPTIONS"]
 }
 
 variable "default_forward_query_string" {
@@ -33,7 +31,7 @@ variable "default_forward_query_string" {
 
 variable "default_forward_cookies" {
   description = "Allowed values = all, none or whitelist"
-  default = "none"
+  default = "all"
 }
 
 variable "default_forward_viewer_protocol_policy" {
@@ -55,58 +53,48 @@ variable "default_forward_max_ttl" {
   default = "86400"
 }
 
-variable "default_root_object" {}
+variable "default_root_object" { default = "" }
 
 variable "default_forward_headers" {
   type = "list"
   default = ["Accept", "Accept-Charset", "Access-Control-Allow-Origin", "Host", "Origin"]
 }
 
-variable "enabled" {
-  default = true
-}
+variable "enabled" { default = true }
 
-variable "is_ipv6_enabled" {
-  default = true
-}
+variable "is_ipv6_enabled" { default = true }
 
 variable "http_version" {
   description = "Allowed values are http1.1 and http2"
   default = "http2"
 }
 
-variable "log_include_cookies" {
-  default = true
-}
+variable "log_include_cookies" { default = true }
 
-variable "log_bucket" {}
+variable "log_bucket" { default = ""}
 
-variable "log_prefix" {}
+variable "log_prefix" { default = "" }
 
-variable "origin_domain_name" {
-  description = "Bucket name + .s3.amazonaws.com"
-}
+variable "origin_domain_name" { description = "The website FQDN, or ALB DNS name" }
 
+variable "origin_http_port" { default = 80 }
 
-variable "origin_http_port" {
-  default = 80
-}
-
-variable "origin_https_port" {
-  default = 443
-}
+variable "origin_https_port" { default = 443 }
 
 variable "origin_protocol_policy" {
   description = "Allowed values = http-only, https-only, or match-viewer"
   default = "match-viewer"
-
 }
+
+variable "orgin_id" { default = "origin-id-default" }
 
 variable "origin_ssl_protocols" {
   type = "list"
   description = "Allowd values = SSLv3, TLSv1, TLSv1.1, and TLSv1.2"
-  default = ["TLSv1", "TLSv1.1", "TLSv1.2"]
+  default = ["SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2"]
 }
+
+variable "origin_path" { default = "" }
 
 variable "price_class" {
   description = "Allowed values are PriceClass_100 | PriceClass_200 | PriceClass_All - see doc for more information"
@@ -118,11 +106,9 @@ variable "geo_restriction_type" {
   default = "none"
 }
 
-//variable "geo_locations" {}
+variable "acm_certificate_arn" { default = "" }
 
-variable "acm_certificate_arn" {}
 
-# variable "iam_certificate_id" {}
 
 variable "minimum_protocol_version" {
   description = "Allowed values SSLv3, TLSv1, TLSv1_2016, TLSv1.1_2016 or TLSv1.2_2018"
@@ -134,34 +120,21 @@ variable "ssl_support_method" {
   default = "sni-only"
 }
 
-variable "web_acl_id" {}
+variable "web_acl_id" { default = "" }
 
-variable "retain_on_delete" {}
+variable "retain_on_delete" { default = false }
 
 /*
 Tags
 */
-variable "name" {
-  description = "Input the name of stack"
-  default     = ""
-}
-
-variable "tag_project" {
-  description = "The name of the project this resource belongs to"
-  default     = ""
-}
 
 variable "tag_env" {
   description = "The environemnt this resource is being deployed to"
   default     = ""
 }
 
-variable "tag_costcenter" {
-  description = "The cost center"
-  default     = ""
-}
-
-variable "tag_createdby" {
-  description = "Who created this resource"
-  default     = ""
+variable "other_tags" {
+  description = "For adding an additional values for tags"
+  type = "map"
+  default = {}
 }

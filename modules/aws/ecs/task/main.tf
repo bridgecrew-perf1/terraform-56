@@ -2,49 +2,56 @@ terraform {
   required_version  = "> 0.11.2"
 }
 
-resource "aws_ecs_task_definition" "main" {
-  family                = "${var.name}"
-  task_role_arn = "${var.iam_role_arn}"
-  # execution_role_arn = "${var.execution_role_arn}"
-  network_mode = "${var.network_mode}"
-  # volume {
-  #   name      = "service-storage"
-  #   host_path = "/ecs/service-storage"
-  # }
-  container_definitions = <<DEFINITION
-{
-  "containerDefinitions": [
-    {
-      "name": "${name}",
-      "image": "${var.image}",
-      "essential": "${var.essential}",
-      "portMappings": [
-        {
-          "containerPort": "${var.cport}",
-          "hostPort": "${var.hport}"
-        }
-      ],
-      "memory": "${var.memory}",
-      "cpu": "${var.cpu}"
-    },
-    {
-      "environment": [
-        "${var.env_variables}"
-      ],
-      "command": [
-        "${var.entrypoint}"
-      ],
-      "logConfiguration": {
-        "logDriver": "${var.log_driver}",
-        "options": {
-          "awslogs-group": "${var.log_group}",
-          "awslogs-region": "${var.region}"
-        }
-      }
-    }
-  ],
-  "family": "${var.name}",
-  "taskRoleArn": "${var.iam_role_arn}"
+
+// IAM Role
+resource "aws_iam_instance_profile" "main" {
+  name                        = "${var.name}_ecs_service_iam_role"
+  path                        = "${var.iam_policy_path}"
+  role                        = "${aws_iam_role.main.name}"
 }
-DEFINITION
+
+resource "aws_iam_role" "main" {
+  description                 = "${var.name} ECS Service IAM Role"
+  name                        = "${var.name}_ecs_service_iam_role"
+  path                        = "${var.iam_policy_path}"
+  assume_role_policy          = "${var.assume_role_policy}"
+}
+
+resource "aws_iam_policy" "main" {
+    name                      = "${var.name}_iam_pol"
+    description               = "${var.name} ECS Service IAM policy"
+    path                      = "${var.iam_policy_path}"
+    policy                    = "${var.policy}"
+}
+
+resource "aws_iam_policy_attachment" "main" {
+    name                      = "${var.name}"
+    roles                     = ["${aws_iam_role.main.name}"]
+    policy_arn                = "${aws_iam_policy.main.arn}"
+}
+
+resource "aws_cloudwatch_log_group" "main" {
+  name = "/aws/ecs/${var.cluster}/apps/${var.tag_env}/${var.name}"
+  tags = "${merge(map(
+    "Name", "${var.name}",
+    "Environment", "${var.tag_env}"),
+    var.other_tags
+  )}"
+}
+
+// ECS Task Defenition
+resource "aws_ecs_task_definition" "main" {
+  family = "${var.name}_task"
+  task_role_arn = "${aws_iam_role.main.arn}"
+  execution_role_arn = "${aws_iam_role.main.arn}"
+  network_mode = "${var.network_mode}"
+  requires_compatibilities = ["${var.launch_type}"]
+  cpu = "${var.cpu}"
+  memory = "${var.memory}"
+  volume {
+    name = "${var.volume_name}"
+    host_path = "${var.volume_path}"
+  }
+  container_definitions = "${var.container_definitions}"
+  depends_on = ["aws_iam_role.main"]
 }

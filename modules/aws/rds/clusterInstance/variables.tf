@@ -17,11 +17,19 @@ variable "instance_class" {
 /*
 db.t2.small
 db.t2.medium
-db.r3.large
-db.r3.xlarge
-db.r3.2xlarge
-db.r3.4xlarge
-db.r3.8xlarge
+db.t3.small
+db.t3.medium
+db.r4.large
+db.r4.xlarge
+db.r4.2xlarge
+db.r4.4xlarge
+db.r4.8xlarge
+db.r4.16xlarge
+db.r5.large
+db.r5.xlarge
+db.r5.2xlarge
+db.r5.4xlarge
+db.r5.12xlarge
 */
   default = ""
 }
@@ -74,6 +82,11 @@ variable "preferred_maintenance_window" {
   default = ""
 }
 
+variable "copy_tags_to_snapshot" {
+  description = "Copy all Cluster tags to snapshots. Default is false"
+  default = "false"
+}
+
 # variable "performance_insights_enabled" {
 #   description = "Specifies whether Performance Insights is enabled or not"
 #   default = ""
@@ -87,27 +100,13 @@ variable "preferred_maintenance_window" {
 /*
 Tags
 */
-variable "name" {
-  description = "Input the name of stack"
-  default     = ""
-}
-
-variable "tag_project" {
-  description = "The name of the project this resource belongs to"
-  default     = ""
-}
-
 variable "tag_env" {
   description = "The environemnt this resource is being deployed to"
   default     = ""
 }
 
-variable "tag_costcenter" {
-  description = "The cost center"
-  default     = ""
-}
-
-variable "tag_createdby" {
-  description = "Who created this resource"
-  default     = ""
+variable "other_tags" {
+  description = "For adding an additional values for tags"
+  type = "map"
+  default = {}
 }

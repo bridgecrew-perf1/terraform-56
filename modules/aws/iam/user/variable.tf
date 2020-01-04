@@ -1,19 +1,18 @@
 variable "name" {}
 
-variable "force_destroy" {
-  default = false
+variable "force_destroy" { default = false }
+
+variable "path" { default = "/" }
+
+variable "policy" { default = "" }
+
+variable "tag_env" {
+  description = "The environemnt this resource is being deployed to"
+  default     = ""
 }
 
-variable "path" {
-  default = "/"
+variable "other_tags" {
+  description = "For adding an additional values for tags"
+  type = "map"
+  default = {}
 }
-
-variable "tag_project" {}
-
-variable "tag_env" {}
-
-variable "tag_costcenter" {}
-
-variable "tag_createdby" {}
-
-

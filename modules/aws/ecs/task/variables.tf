@@ -1,68 +1,27 @@
-variable "name" {
-  description = "The name for the task definition"
-  default = ""
-}
+variable "name" {}
 
-variable "container_definitions" {
-  description = "The container definition settings"
-  default = ""
-}
+variable "iam_policy_path" { default = "/" }
 
-variable "iam_role_arn" {
-  description = "The role to assume by the task"
-  default = ""
-}
+variable "assume_role_policy" {}
 
-variable "network_mode" {
-  description = "The task network mode"
-  default = ""
-}
+variable "policy" {}
 
-variable "image" {
-  description = "the full path to the image with repo/image"
-  default = ""
-}
+variable "cluster" {}
 
-variable "essential" {
-  description = "When using more than one container on a task this means that if this fails/stops all will stop"
-  default = ""
-}
+variable "tag_env" { default = "" }
 
-variable "cport" {
-  description = "The container port"
-  default = ""
-}
+variable "other_tags" { type = "map" default = {} }
 
-variable "hport" {
-  description = "The host port to map the container port to"
-  default = ""
-}
+variable "network_mode" { default = "awsvpc" }
 
-variable "env_variables" {
-  description = "Environment variables which you want to feed to the container"
-  type = "list"
-  default = []
-}
+variable "launch_type" { default = "FARGATE" }
 
-variable "entrypoint" {
-  description = "The command(s) used to start the container"
-  type = "list"
-  default = ""
-}
+variable "cpu" { default = 256 }
 
-variable "log_driver" {
-  description = "The type of log driver to use for this container"
-  default = ""
-}
+variable "memory" { default = 1024 }
 
-variable "log_group" {
-  description = "The Cloudwatch log group"
-  default = ""
-}
+variable "volume_name" { default = "volume_1" }
 
-variable "region" {
-  description = "The region for the log group"
-  default = ""
-}
+variable "volume_path" { default = "" }
 
-
+variable "container_definitions" {}

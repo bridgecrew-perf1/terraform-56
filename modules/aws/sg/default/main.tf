@@ -24,11 +24,9 @@ resource "aws_security_group" "main" {
     cidr_blocks               = ["${var.egr_cidr_blocks}"]
     security_groups           = ["${var.egr_security_groups}"]
   }
-  tags {
-    Name                       = "${var.name}"
-    Project                    = "${var.tag_project}"
-    Environment                = "${var.tag_env}"
-    awsCostCenter              = "${var.tag_costcenter}"
-    CreatedBy                  = "${var.tag_createdby}"
-  }
+  tags = "${merge(map(
+    "Name", "${var.name}",
+    "Environment", "${var.tag_env}"),
+    var.other_tags
+  )}"
 }

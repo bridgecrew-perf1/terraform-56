@@ -157,20 +157,20 @@ data "aws_iam_policy_document" "replication" {
     ]
   }
   statement {
-    sid = "DestimationReplicationConfiguration"
+    sid = "DestinationReplicationConfiguration"
     effect = "Allow"
     actions = [
       "s3:ReplicateObject",
       "s3:ReplicateDelete",
       "s3:ReplicateTags",
-      "s3:GetObjectVersionTagging"
+      "s3:GetObjectVersionTagging",
+      "s3:PutObject"
     ]
     resources = ["${var.s3_destination_bucket_arn}/*"]
     condition {
       test = "StringLikeIfExists"
       values = [
-        "aws:kms",
-        "AES256"
+        "aws:kms"
       ]
       variable = "s3:x-amz-server-side-encryption"
     }

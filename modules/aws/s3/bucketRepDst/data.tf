@@ -6,10 +6,30 @@ Destination Replication s3 bucket policy
 
 data "aws_iam_policy_document" "bucket" {
   statement {
-    sid = "AWSCloudtrailGetAcl"
+    sid = "AWSExternalAccountsReplication&Encrypt"
     effect = "Allow"
     principals {
-      identifiers = ["${var.s3_source_account_resource_arn}"]
+      identifiers = ["${var.s3_source_account_root}"]
+      type = "AWS"
+    }
+    actions = [
+      "s3:GetBucketVersioning",
+      "s3:PutObject",
+      "s3:PutBucketVersioning",
+      "s3:ReplicateObject",
+      "s3:ReplicateDelete",
+      "s3:ObjectOwnerOverrideToBucketOwner"
+    ]
+    resources = [
+      "${aws_s3_bucket.main.arn}",
+      "${aws_s3_bucket.main.arn}/*"
+    ]
+  }
+  statement {
+    sid = "AWSExternalAccountsList"
+    effect = "Allow"
+    principals {
+      identifiers = ["${var.s3_source_account_root}"]
       type = "AWS"
     }
     actions = [
@@ -44,10 +64,10 @@ data "aws_iam_policy_document" "kms" {
     resources = ["*"]
   }
   statement {
-    sid = "Allow${var.s3_source_account}Encrypt"
+    sid = "AllowExternalEncrypt"
     effect = "Allow"
     principals {
-      identifiers = ["arn:aws:iam::${var.s3_source_account}:root"]
+      identifiers = ["${var.s3_source_account_id}"]
       type = "AWS"
     }
     actions = ["kms:Encrypt"]

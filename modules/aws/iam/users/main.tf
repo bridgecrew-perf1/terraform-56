@@ -8,12 +8,9 @@ resource "aws_iam_user" "main" {
   name = "${element(var.users, count.index)}"
   force_destroy = "${var.force_destroy}"
   path = "${var.path}"
-  tags = {
-    Name                       = "${element(var.users, count.index)}"
-    Project                    = "${var.tag_project}"
-    Environment                = "${var.tag_env}"
-    awsCostCenter              = "${var.tag_costcenter}"
-    CreatedBy                  = "${var.tag_createdby}"
-  }
+  tags = "${merge(map(
+    "Name", "${element(var.users, count.index)}",
+    "Environment", "${var.tag_env}"),
+    var.other_tags
+  )}"
 }
-

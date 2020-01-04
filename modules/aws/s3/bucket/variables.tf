@@ -9,6 +9,11 @@ variable "destroy" {
   default = "false"
 }
 
+variable "versioning" {
+  default = false
+  description = "Keep multiple versions of an object in the same bucket. Default false"
+}
+
 /*
 Tags
 */
@@ -17,22 +22,13 @@ variable "name" {
   default     = ""
 }
 
-variable "tag_project" {
-  description = "The name of the project this resource belongs to"
-  default     = ""
-}
-
 variable "tag_env" {
   description = "The environemnt this resource is being deployed to"
   default     = ""
 }
 
-variable "tag_costcenter" {
-  description = "The cost center"
-  default     = ""
-}
-
-variable "tag_modifiedby" {
-  description = "Who modified this resource"
-  default     = ""
+variable "other_tags" {
+  description = "For adding an additional values for tags"
+  type = "map"
+  default = {}
 }

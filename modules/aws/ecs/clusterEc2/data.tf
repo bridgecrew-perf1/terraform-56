@@ -2,11 +2,7 @@
 // Get the latest AMI
 data "aws_ami" "ecs_ami" {
   most_recent = true
-
-  filter {
-    name   = "owner-alias"
-    values = ["${var.ami_owner}"]
-  }
+  owners      = ["${var.ami_owner}"]
   filter {
     name   = "name"
     values = ["${var.ami_name}"]
@@ -69,7 +65,6 @@ data "aws_iam_policy_document" "ecs_cluster" {
 
     resources = ["arn:aws:logs:*:*:*"]
   }
-
   statement {
     sid    = "ECSCWAgent"
     effect = "Allow"
@@ -78,51 +73,98 @@ data "aws_iam_policy_document" "ecs_cluster" {
       "cloudwatch:PutMetricData",
       "ec2:DescribeTags"
     ]
-
     resources = ["*"]
+  }
+  statement {
+    sid    = "s3List"
+    effect = "Allow"
+
+    actions = ["s3:ListBucket"]
+    resources = [
+      "arn:aws:s3:::${var.config_bucket}",
+      "arn:aws:s3:::${var.secrets_bucket}"
+    ]
+  }
+  statement {
+    sid    = "s3Get"
+    effect = "Allow"
+
+    actions = [
+      "s3:GetObject",
+      "s3:GetObjectAcl",
+      "s3:ListObjects",
+      "s3:ListBucket"
+    ]
+    resources = [
+      "arn:aws:s3:::${var.config_bucket}/*",
+      "arn:aws:s3:::${var.secrets_bucket}/ssh/${var.env}/*"
+    ]
   }
 }
 
-data "template_file" "user_data" {
-   vars {
-    clustername             = "${var.name}"
-    groupname               = "${var.name}"
-    loglevel                = "${var.name}"
-    workload                = "${var.name}"
-    owner                   = "${var.tag_project}"
+data "template_file" "init" {
+  vars {
   }
-  template                  = <<EOF
-Content-Type: multipart/mixed; boundary="==BOUNDARY=="
-MIME-Version: 1.0
+  template = "${file("${path.module}/scripts/init.cfg")}"
+}
 
---==BOUNDARY==
-Content-Type: text/cloud-boothook; charset="us-ascii"
+data "template_file" "userdata" {
+  vars {
+    ami_architecture                  = "${var.ami_architecture}"
+    loggroup                          = "${aws_cloudwatch_log_group.main.name}"
 
-# Install awslogs
-cloud-init-per once yum_update yum update -y
-cloud-init-per once install_cloudwatch_logs_agent yum install -y awslogs jq
+    env                               = "${var.env}"
+    config_bucket                     = "${var.config_bucket}"
+    secrets_bucket                    = "${var.secrets_bucket}"
+    region                            = "${var.region}"
+    stack_type                       = "${var.stack_type}"
+    device_name_ecs                   = "${var.device_name_ecs}"
+    del_ec2_user                      = "${var.del_ec2_user}"
 
---==BOUNDARY==
-Content-Type: text/x-shellscript; charset="us-ascii"
-#!/bin/bash
-# Set any ECS agent configuration options
-cat <<'EOC' >> /etc/ecs/ecs.config
-ECS_CLUSTER=$${clustername}
-ECS_LOGLEVEL=$${loglevel}
-ECS_AVAILABLE_LOGGING_DRIVERS=["json-file","awslogs"]
-ECS_CONTAINER_START_TIMEOUT=10m
-ECS_RESERVED_MEMORY=256
-ECS_INSTANCE_ATTRIBUTES={"workload": "$${workload}"}
-ECS_CONTAINER_INSTANCE_TAGS={"owner": "$${owner}","workload": "$${workload}"}
-EOC
+    debug                             = "${var.debug_script}"
 
-EOF
+    ecs_cluster                       = "${var.name}"
+    ecs_log_level                     = "${var.ecs_log_level}"
 
+    ecs_reserved_memory               = "${var.ecs_reserved_memory}"
+    ecs_instance_attributes           = "${var.ecs_instance_attributes}"
+    ecs_engine_auth_type              = "${var.ecs_engine_auth_type}"
+    ecs_engine_auth_data              = "${var.ecs_engine_auth_data}"
+    docker_host                       = "${var.docker_host}"
+    ecs_logfile                       = "${var.ecs_logfile}"
+    ecs_checkpoint                    = "${var.ecs_checkpoint}"
+    ecs_datadir                       = "${var.ecs_datadir}"
+    ecs_disable_privileged            = "${var.ecs_disable_privileged}"
+    ecs_container_stop_timeout        = "${var.ecs_container_stop_timeout}"
+    ecs_container_start_timeout       = "${var.ecs_container_start_timeout}"
+    ecs_disable_image_cleanup         = "${var.ecs_disable_image_cleanup}"
+    ecs_image_cleanup_interval        = "${var.ecs_image_cleanup_interval}"
+    ecs_image_minimum_cleanup_age     = "${var.ecs_image_minimum_cleanup_age}"
+    ecs_enable_container_metadata     = "${var.ecs_enable_container_metadata}"
+  }
+  template = "${file("${path.module}/scripts/user_data.sh")}"
+}
+
+data "template_cloudinit_config" "config" {
+  gzip          = false
+  base64_encode = true
+
+  # Main cloud-config configuration file.
+  part {
+    filename     = "init.cfg"
+    content_type = "text/cloud-config"
+    content      = "${data.template_file.init.rendered}"
+  }
+  part {
+    content_type = "text/x-shellscript"
+    content      = "${data.template_file.userdata.rendered}"
+  }
 }
 
 data "template_file" "dashboard" {
    vars {
     cluster_name             = "${aws_autoscaling_group.main.name}"
+    region                   = "${var.region}"
   }
   template                  = "${file("${path.module}/dashboard.json")}"
 

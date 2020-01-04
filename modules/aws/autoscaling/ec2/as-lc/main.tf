@@ -52,33 +52,11 @@ resource "aws_autoscaling_group" "main" {
   enabled_metrics             = ["${var.enabled_metrics}"]
   wait_for_capacity_timeout   = "${var.wait_for_capacity_timeout}"
   protect_from_scale_in       = "${var.protect_from_scale_in}"
-  tags = [
-    {
-      key                 = "Name"
-      value               = "${var.asg_name}.${var.name}.${count.index}"
-      propagate_at_launch = true
-    },
-    {
-      key                 = "Project"
-      value               = "${var.tag_project}"
-      propagate_at_launch = true
-    },
-    {
-      key                 = "Environment"
-      value               = "${var.tag_env}"
-      propagate_at_launch = true
-    },,
-    {
-      key                 = "awsCostCenter"
-      value               = "${var.tag_costcenter}"
-      propagate_at_launch = true
-    },,
-    {
-      key                 = "CreatedBy"
-      value               = "${var.tag_createdby}"
-      propagate_at_launch = true
-    },
-  ]
+  tags = "${merge(map(
+    "Name", "${var.name}",
+    "Environment", "${var.tag_env}"),
+    var.other_tags
+  )}"
 }
 
 
