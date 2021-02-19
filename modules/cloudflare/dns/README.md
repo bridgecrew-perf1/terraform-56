@@ -2,15 +2,30 @@
 
 For these examples the values of the variables are stored on **hlc** files.
 
-### DNS Record:
+This module is compatible with Terraform 14.x or higher.
+### DNS Record example for 2.0 provider:
 
 ```
-module "cfRecord_1" {
-  source = "<LOCAL_PATH>"
-  cloudflare_zone = "${var.cloudflare_zone}"
-  name = "${var.cloudflare_fqdn_1}"
-  value = "${var.cloudflare_s3_website}"
+module "clouflare_record" {
+  source = "./record/"
+  zone_id = "123542etdfl345..."
+  name = "record.boldlink.io"
+  value = "lb.read-api.prd.boldlink.io"
   type = "CNAME"
-  ttl = "3600"
+}
+
+provider "cloudflare" {
+# Authentication - consider using variables so you don't hardcode it on your code
+  email      = "example@boldlink.io"
+  api_key    = "23wer4665..."
+  account_id = "45ljlk345n3453..."
+}
+
+terraform {
+  required_providers {
+    cloudflare = {
+      source = "cloudflare/cloudflare"
+    }
+  }
 }
 ```
