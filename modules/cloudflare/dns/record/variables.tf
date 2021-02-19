@@ -1,23 +1,11 @@
-variable "cloudflare_zone" {
-  default = ""
-}
+variable "zone_id" {}
 
-variable "name" {
-  default = ""
-}
+variable "name" {}
 
-variable "value" {
-  default = ""
-}
+variable "value" {}
 
-variable "type" {
-  default = ""
-}
+variable "type" { default = "CNAME" }
 
-variable "ttl" {
-  default = ""
-}
+variable "ttl" { default = 3600 }
 
-variable "proxied" {
-  default = true
-}
+variable "proxied" { default = false }
