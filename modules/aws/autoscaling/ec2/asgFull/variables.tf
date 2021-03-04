@@ -2,46 +2,42 @@
 Auto Scaling variable definition
 */
 
-variable "ami_owner" {
-  default = "amazon"
-}
+variable "ami_owner" { default = "amazon" }
 
-variable "ami_name" {
-  default = "amzn2-ami-hvm-2.0.*"
-}
+variable "ami_name" { default = "amzn2-ami-hvm-2.0.*" }
 
-variable "ami_architecture" {
-  default = "arm64"
-}
+variable "ami_architecture" { default = "arm64" }
+
+variable "iam_role_path" { default = "/"}
 
 variable "vpc_zone_identifier" {
   description = "A list of subnet IDs for the ec2 instances"
-  type = "list"
+  type        = list(string)
 }
 
 variable "max_size" {
   description = "Maximum nr of nodes on the ASG"
-  default = "10"
+  default     = "10"
 }
 
 variable "min_size" {
   description = "Minimum nr of nodes on the ASG"
-  default = "0"
+  default     = "0"
 }
 
 variable "desired_capacity" {
   description = "The inital capacity of the ASG, must be >= to min_size"
-  default = "0"
+  default     = "0"
 }
 
 variable "default_cooldown" {
   description = "Default time to wait before scaling up/down"
-  default = "120"
+  default     = "120"
 }
 
 variable "force_delete" {
   description = "Forces the deletion of the ASG even if not all instances are terminated, true/false"
-  default = false
+  default     = false
 }
 
 variable "health_check_grace_period" {
@@ -54,14 +50,13 @@ variable "health_check_type" {
 
 variable "termination_policies" {
   description = "OldestInstance, NewestInstance, OldestLaunchConfiguration, ClosestToNextInstanceHour, Default"
-  type = "list"
-  default = ["Default"]
+  type        = list(string)
+  default     = ["Default"]
 }
-
 
 variable "enabled_metrics" {
   description = "Allowed values are GroupMinSize, GroupMaxSize, GroupDesiredCapacity, GroupInServiceInstances, GroupPendingInstances, GroupStandbyInstances, GroupTerminatingInstances, GroupTotalInstances"
-  type = "list"
+  type        = list(string)
   default = [
     "GroupMinSize",
     "GroupMaxSize",
@@ -70,197 +65,117 @@ variable "enabled_metrics" {
     "GroupPendingInstances",
     "GroupStandbyInstances",
     "GroupTerminatingInstances",
-    "GroupTotalInstances"
+    "GroupTotalInstances",
   ]
 }
 
-variable "wait_for_capacity_timeout" {
-  description = "Amount of time terraform waits before moving no"
-  default = "0"
+variable "wait_for_capacity_timeout" { default = "0" }
+
+variable "protect_from_scale_in" { default     = false }
+
+# SSH Key
+variable "algorithm" { default = "RSA" }
+
+variable "rsa_bits" { 
+  default = "4096" 
+  sensitive = true
 }
 
-variable "protect_from_scale_in" {
-  description = "Select this option for the instances to be protected from deletion on scale in, true/false"
-  default = false
-}
+variable "stack_type" { default = "asgfull.default"}
 
-// SSH Key
-variable "algorithm" {
-  default = "RSA"
-}
+# Security Group
 
-variable "rsa_bits" {
-  default = "4096"
-}
+variable "vpc_id" {}
 
-variable "stack_type" {
-  description = "Select the location of the ssh files on S3 to use ex. bastion; ecs"
-  default = "bastion"
-}
+variable "igr_from" { default = "22" }
 
-variable "del_ec2_user" { default = "true" }
+variable "igr_to" { default = "22" }
 
-// Security Group
-
-variable "vpc_id" {
-  default = ""
-}
-
-variable "igr_from" {
-  default = "22"
-}
-
-variable "igr_to" {
-  default = "22"
-}
-
-variable "igr_protocol" {
-  default = "tcp"
-}
+variable "igr_protocol" { default = "tcp" }
 
 variable "igr_cidr_blocks" {
-  type = "list"
+  type    = list(string)
   default = ["0.0.0.0/0"]
 }
 
-variable "port" {
-  default = "22"
-}
+variable "port" { default = "22" }
 
-// Launch Template
+# Launch Template
 
-variable "instance_type" {
-  default = "a1.medium"
-}
+variable "instance_type" { default = "a1.medium" }
 
-variable "device_name_root" {
-  default = "/dev/xvda"
-}
+variable "device_name_root" { default = "/dev/xvda" }
 
-variable "volume_size_root" {
-  default = "80"
-}
+variable "volume_size_root" { default = "40" }
 
-variable "volume_type_root" {
-  default = "gp2"
-}
+variable "volume_type_root" { default = "gp2"}
 
 variable "ebs_encrypted" { default = false }
 
+# By leaving this blank it will allow you to use alias/ebs key by default or
+# a custom key specified using this variable
 variable "ebs_kms_key_id" { default = "" }
 
-variable "delete_on_termination_root" {
-  default = true
-}
+variable "delete_on_termination_root" { default = true }
 
-variable "encrypted_root" {
-  default = false
-}
+variable "encrypted_root" { default = true }
 
-//variable "delete_on_termination_ecs" {
-//  default = true
-//}
-//
-//variable "encrypted_ecs" {
-//  default = false
-//}
+variable "ebs_optimized" { default = true }
 
-variable "ebs_optimized" {
-  default = true
-}
+variable "disable_api_termination" { default = false }
 
-variable "disable_api_termination" {
-  default = false
-}
+variable "instance_initiated_shutdown_behavior" { default = "terminate" }
 
-variable "instance_initiated_shutdown_behavior" {
-  default = "terminate"
-}
+variable "monitoring_enabled" { default = true }
 
-variable "monitoring_enabled" {
-  default = true
-}
+variable "associate_public_ip_address" { default = false }
 
-variable "associate_public_ip_address" {
-  default = false
-}
+variable "delete_on_termination" { default = true }
 
-variable "delete_on_termination" {
-  default = true
-}
-
+# Use only during troubleshooting, this will enable bash -x output of every command
 variable "debug_script" {
   description = "Enable set -x option for userdatam use 'off' or 'on' as valus"
-  default = "off"
-}
-//variable "ecs_log_level" {
-//  default = "info"
-//}
-
-variable "config_bucket" {}
-
-variable "secrets_bucket" {}
-
-variable "region" {}
-
-
-// Autoscaling variables and values
-
-//variable "policy_type" {
-//  default = "TargetTrackingScaling"
-//}
-//variable "estimated_instance_warmup" {
-//  default = "120"
-//}
-//variable "metric_dimension_name" {
-//  default = "ClusterName"
-//}
-//variable "metric_dimension_metric_name_cpu" {
-//  default = "CpuReservation"
-//}
-//
-//variable "metric_dimension_metric_name_mem" {
-//  default = "MemoryReservation"
-//}
-//
-//
-//variable "metric_dimension_statistic_cpu" {
-//  default = "Average"
-//}
-//
-//variable "metric_dimension_statistic_mem" {
-//  default = "Average"
-//}
-
-variable "average_target_value_cpu" {
-  default = 50
+  default     = "off"
 }
 
-variable "target_value_mem" {
-  default = 60
-}
+# Autoscaling Variables
+variable "metric_dimension_namespace" { default = "aws/EC2" }
 
-// Alarms
+variable "policy_type" { default = "TargetTrackingScaling" }
+
+variable "estimated_instance_warmup" { default = "120" }
+
+variable "metric_dimension_name" { default = "ClusterName" }
+
+variable "metric_dimension_metric_name_cpu" { default = "CpuReservation" }
+
+variable "metric_dimension_metric_name_mem" { default = "MemoryReservation" }
+
+variable "metric_dimension_statistic_cpu" { default = "Average" }
+
+variable "metric_dimension_statistic_mem" { default = "Average" }
+
+variable "average_target_value_cpu" { default = 50 }
+
+variable "target_value_mem" { default = 60 }
+
+# Alarms
 variable "sns_notifications" {
-  type = "list"
+  type = list(string)
   default = [
     "autoscaling:EC2_INSTANCE_LAUNCH",
     "autoscaling:EC2_INSTANCE_LAUNCH_ERROR",
     "autoscaling:EC2_INSTANCE_TERMINATE",
-    "autoscaling:EC2_INSTANCE_TERMINATE_ERROR"
+    "autoscaling:EC2_INSTANCE_TERMINATE_ERROR",
   ]
 }
 
 variable "autoscaling_enabled" {}
 
-variable "sns_enabled" {}
+# variable "sns_enabled" {}
 
 variable "sns_topic_arn" { default = "" }
 
-variable "env" {
-  description = "The environemnt this resource is being deployed to"
-  default     = ""
-}
 
 /*
 Tags
@@ -268,7 +183,7 @@ Tags
 
 variable "name" {
   description = "The name of the stack"
-  default = ""
+  default     = ""
 }
 
 variable "tag_env" {
@@ -278,7 +193,7 @@ variable "tag_env" {
 
 variable "other_tags" {
   description = "For adding an additional values for tags"
-  type = "map"
-  default = {}
+  type        = map(string)
+  default     = {}
 }
 

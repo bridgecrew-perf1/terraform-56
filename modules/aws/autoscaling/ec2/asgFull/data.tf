@@ -1,15 +1,14 @@
-
 // Get the latest AMI
 data "aws_ami" "ami" {
   most_recent = true
-  owners      = ["${var.ami_owner}"]
+  owners      = [var.ami_owner]
   filter {
     name   = "name"
-    values = ["${var.ami_name}"]
+    values = [var.ami_name]
   }
   filter {
     name   = "architecture"
-    values = ["${var.ami_architecture}"]
+    values = [var.ami_architecture]
   }
 }
 
@@ -35,7 +34,7 @@ data "aws_iam_policy_document" "asg" {
       "ecr:GetAuthorizationToken",
       "ecr:BatchCheckLayerAvailability",
       "ecr:GetDownloadUrlForLayer",
-      "ecr:BatchGetImage"
+      "ecr:BatchGetImage",
     ]
 
     resources = ["*"]
@@ -49,7 +48,7 @@ data "aws_iam_policy_document" "asg" {
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
       "logs:PutLogEvents",
-      "logs:Describe*"
+      "logs:Describe*",
     ]
 
     resources = ["arn:aws:logs:*:*:*"]
@@ -61,34 +60,41 @@ data "aws_iam_policy_document" "asg" {
 
     actions = [
       "cloudwatch:PutMetricData",
-      "ec2:DescribeTags"
+      "ec2:DescribeTags",
     ]
 
     resources = ["*"]
   }
 }
 
+
+
+//data "template_file" "dashboard" {
+//   vars {
+//    cluster_name             = "${aws_autoscaling_group.main.name}"
+//  }
+//  template                  = "${file("${path.module}/dashboard.json")}"
+//
+//}
+
+
 data "template_file" "init" {
-  vars {
-  }
-  template                  = "${file("${path.module}/scripts/init.cfg")}"
+  # vars = {
+  # }
+  template = file("${path.module}/scripts/init.cfg")
 }
 
 data "template_file" "userdata" {
-  vars {
-    ami_architecture                  = "${var.ami_architecture}"
-    loggroup                          = "${aws_cloudwatch_log_group.main.name}"
-    stack_type                        = "${var.stack_type}"
-    del_ec2_user                      = "${var.del_ec2_user}"
-    env                               = "${var.env}"
-    config_bucket                     = "${var.config_bucket}"
-    secrets_bucket                    = "${var.secrets_bucket}"
-    region                            = "${var.region}"
-
-    default_port                      = "${var.port}"
-    debug                             = "${var.debug_script}"
+  vars = {
+    ami_architecture                  = var.ami_architecture
+    loggroup                          = aws_cloudwatch_log_group.main.name
+    stack_type                        = var.stack_type
+    # del_ec2_user                      = "${var.del_ec2_user}"
+    env                               = var.tag_env
+    default_port                      = var.port
+    debug                             = var.debug_script
   }
-  template                  = "${file("${path.module}/scripts/user_data.sh")}"
+  template                  = file("${path.module}/scripts/user_data.sh")
 }
 
 data "template_cloudinit_config" "config" {
@@ -99,18 +105,10 @@ data "template_cloudinit_config" "config" {
   part {
     filename     = "init.cfg"
     content_type = "text/cloud-config"
-    content      = "${data.template_file.init.rendered}"
+    content      = data.template_file.init.rendered
   }
   part {
     content_type = "text/x-shellscript"
-    content      = "${data.template_file.userdata.rendered}"
+    content      = data.template_file.userdata.rendered
   }
 }
-
-//data "template_file" "dashboard" {
-//   vars {
-//    cluster_name             = "${aws_autoscaling_group.main.name}"
-//  }
-//  template                  = "${file("${path.module}/dashboard.json")}"
-//
-//}
