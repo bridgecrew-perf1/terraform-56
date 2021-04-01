@@ -97,6 +97,13 @@ data "template_file" "userdata" {
   template                  = file("${path.module}/scripts/user_data.sh")
 }
 
+data "template_file" "cwldata" {
+  vars = {
+    log_group = aws_cloudwatch_log_group.main.name
+  }
+  template = file("${path.module}/scripts/cwl_data.sh")
+}
+
 data "template_cloudinit_config" "config" {
   gzip          = false
   base64_encode = true
@@ -110,5 +117,13 @@ data "template_cloudinit_config" "config" {
   part {
     content_type = "text/x-shellscript"
     content      = data.template_file.userdata.rendered
+  }
+  part {
+    content_type = "text/x-shellscript"
+    content      = data.template_file.cwldata.rendered
+  }
+  part {
+    content_type = "text/x-shellscript"
+    content      = var.extra_script
   }
 }

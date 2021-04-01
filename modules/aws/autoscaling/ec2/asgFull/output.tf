@@ -30,3 +30,10 @@ output "private_key_pem" {
   value = tls_private_key.main.private_key_pem
 }
 
+output "security_group_id" {
+  value = aws_security_group.main.id
+}
+
+output "security_group_name" {
+  value = aws_security_group.main.name
+}

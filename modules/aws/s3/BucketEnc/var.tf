@@ -15,13 +15,9 @@ variable "versioning" {
   description = "Keep multiple versions of an object in the same bucket. Default false"
 }
 
-variable "kms_master_key_id" {
-  default = ""
-}
+variable "kms_master_key_id" { default = "" }
 
-variable "sse_algorithm" {
-  default = "aws:kms"
-}
+variable "sse_algorithm" { default = "AES256" }
 
 /*
 Tags
@@ -38,7 +34,7 @@ variable "tag_env" {
 
 variable "other_tags" {
   description = "For adding an additional values for tags"
-  type        = "map"
+  type        = map(string)
   default     = {}
 }
 
@@ -46,7 +42,8 @@ variable "other_tags" {
 Folders
 */
 variable "folders" {
-  type = "list"
+  type        = list(string)
   default     = []
   description = "Space separate list of top-level folders"
 }
+

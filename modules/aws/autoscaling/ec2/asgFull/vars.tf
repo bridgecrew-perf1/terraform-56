@@ -95,7 +95,7 @@ variable "igr_protocol" { default = "tcp" }
 
 variable "igr_cidr_blocks" {
   type    = list(string)
-  default = ["0.0.0.0/0"]
+  default = ["127.0.0.1/32"] # By default you cannot network connect to ssh (loopback address).
 }
 
 variable "port" { default = "22" }
@@ -171,6 +171,8 @@ variable "sns_notifications" {
 }
 
 variable "autoscaling_enabled" {}
+
+variable "extra_script" { default = "" }
 
 # variable "sns_enabled" {}
 
