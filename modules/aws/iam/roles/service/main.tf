@@ -3,7 +3,7 @@ terraform {
 }
 
 resource "aws_iam_instance_profile" "main" {
-  name = "${var.name}_iam_role"
+  name = "${var.name}.iam_role"
   path = var.iam_policy_path
   role = aws_iam_role.main.name
 }

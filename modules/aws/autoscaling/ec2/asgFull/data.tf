@@ -53,7 +53,19 @@ data "aws_iam_policy_document" "asg" {
 
     resources = ["arn:aws:logs:*:*:*"]
   }
+  statement {
+    sid    = "ssmAgent"
+    effect = "Allow"
 
+    actions = [
+      "ssmmessages:CreateControlChannel",
+      "ssmmessages:CreateDataChannel",
+      "ssmmessages:OpenControlChannel",
+      "ssmmessages:OpenDataChannel",
+    ]
+
+    resources = ["arn:aws:logs:*:*:*"]
+  }
   statement {
     sid    = "CWAgent"
     effect = "Allow"
