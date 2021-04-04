@@ -1,17 +1,15 @@
-
-
 variable "vpc_id" {
   description = "The vpc id to create the security group in"
 }
 
 variable "igr_from" {
   description = "igr_from"
-  default = 22
+  default     = 22
 }
 
 variable "igr_to" {
   description = "igr_to"
-  default = 22
+  default     = 22
 }
 
 variable "igr_protocol" {
@@ -20,14 +18,14 @@ variable "igr_protocol" {
 
 variable "igr_cidr_blocks" {
   description = ""
-  type = "list"
-  default = ["0.0.0.0/0"]
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
 }
 
 variable "igr_security_groups" {
   description = ""
-  type = "list"
-  default = []
+  type        = list(string)
+  default     = []
 }
 
 variable "egr_from" {
@@ -43,14 +41,14 @@ variable "egr_protocol" {
 }
 
 variable "egr_cidr_blocks" {
-  type = "list"
+  type    = list(string)
   default = ["0.0.0.0/0"]
 }
 
 variable "egr_security_groups" {
   description = ""
-  type = "list"
-  default = []
+  type        = list(string)
+  default     = []
 }
 
 /*
@@ -68,6 +66,7 @@ variable "tag_env" {
 
 variable "other_tags" {
   description = "For adding an additional values for tags"
-  type = "map"
-  default = {}
+  type        = map(string)
+  default     = {}
 }
+
