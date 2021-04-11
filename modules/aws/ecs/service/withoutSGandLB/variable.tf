@@ -1,4 +1,5 @@
-variable "name" {}
+variable "name" {
+}
 
 variable "iam_policy_path" {
   default = "/"
@@ -13,12 +14,14 @@ variable "memory" {
 }
 
 variable "security_groups" {
-  type = "list"
+  type = list(string)
 }
 
-variable "cluster" {}
+variable "cluster" {
+}
 
-variable "container_definitions" {}
+variable "container_definitions" {
+}
 
 variable "desired_count" {
   default = 1
@@ -33,7 +36,7 @@ variable "network_mode" {
 }
 
 variable "subnets" {
-  type = "list"
+  type = list(string)
 }
 
 variable "max_capacity" {
@@ -47,10 +50,11 @@ variable "tag_env" {
 
 variable "other_tags" {
   description = "For adding an additional values for tags"
-  type        = "map"
+  type        = map(string)
   default     = {}
 }
 
 variable "task_role_arn" {
   description = "ARN of the IAM role that allows ECS to make calls to other AWS services"
 }
+
