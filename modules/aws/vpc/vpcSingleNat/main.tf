@@ -277,7 +277,7 @@ resource "aws_subnet" "eks_public" {
 Eks Public Route Association
 */
 resource "aws_route_table_association" "eks_public" {
-  count          = length(var.public_subnets)
+  count          = length(var.eks_public_subnets)
   subnet_id      = element(aws_subnet.eks_public.*.id, count.index)
   route_table_id = aws_route_table.public[0].id
 }

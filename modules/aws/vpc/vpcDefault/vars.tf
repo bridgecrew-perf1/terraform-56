@@ -1,8 +1,6 @@
-variable "region" {
-}
+variable "region" {}
 
-variable "account" {
-}
+variable "account" {}
 
 variable "cidr" {
   description = "VPC address block"
